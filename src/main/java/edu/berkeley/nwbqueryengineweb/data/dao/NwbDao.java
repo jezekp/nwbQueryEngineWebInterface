@@ -1,10 +1,15 @@
 package edu.berkeley.nwbqueryengineweb.data.dao;
 
 import edu.berkeley.nwbqueryengine.api.FileInput;
+import edu.berkeley.nwbqueryengine.data.NwbResult;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,16 +40,38 @@ import java.util.List;
 @Repository
 public class NwbDao implements GenericDao<NwbData> {
 
+    @Autowired
+    private FileInput nwbQueryEngine;
+    @Value("${files.folder}")
+    private String fileFolder;
 
-    FileInput nwbQueryEngine = new FileInput();
 
     @Override
     public List<NwbData> getData(String query) {
-        try {
-            nwbQueryEngine.executeQuery(null, query);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        List<NwbData> result = new LinkedList<NwbData>();
+
+        File files = new File(fileFolder);
+        if(files.isDirectory()) {
+            File[] filesNames = files.listFiles();
+            for(File item : filesNames) {
+                try {
+                    List<NwbResult> tmp = nwbQueryEngine.executeQuery(item.getAbsolutePath(), query);
+                    for(NwbResult nwbResult : tmp) {
+                        NwbData res = new NwbData();
+                        res.setDataSet(nwbResult.getDataSet());
+                        res.setValue(nwbResult.getValue());
+                        result.add(res);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
-        return new LinkedList<NwbData>();
+
+
+        return result;
     }
 }

@@ -10,11 +10,8 @@
 
     <context:component-scan base-package="edu.berkeley.nwbqueryengineweb"/>
     <context:annotation-config/>
-<!--
+
     <bean id="nwbQueryEngine" class="edu.berkeley.nwbqueryengine.api.FileInput"></bean>
 
-    <bean id="nwbDao" class="edu.berkeley.nwbqueryengineweb.data.dao.NwbDao">
-        <property name="nwbQueryEngine" ref="nwbQueryEngine"></property>
-    </bean>
--->
+    <context:property-placeholder location="WEB-INF/project.properties"/>
 </beans>

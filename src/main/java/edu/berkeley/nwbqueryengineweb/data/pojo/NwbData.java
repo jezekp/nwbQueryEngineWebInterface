@@ -1,5 +1,7 @@
 package edu.berkeley.nwbqueryengineweb.data.pojo;
 
+import java.io.Serializable;
+
 /***********************************************************************************************************************
  *
  * This file is part of the nwbQueryEngineWebInterface project
@@ -24,5 +26,24 @@ package edu.berkeley.nwbqueryengineweb.data.pojo;
  * NwbData, 2017/09/18 15:32 petr-jezek
  *
  **********************************************************************************************************************/
-public class NwbData {
+public class NwbData implements Serializable {
+
+    private String dataSet;
+    private Object value;
+
+    public String getDataSet() {
+        return dataSet;
+    }
+
+    public void setDataSet(String dataSet) {
+        this.dataSet = dataSet;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
 }

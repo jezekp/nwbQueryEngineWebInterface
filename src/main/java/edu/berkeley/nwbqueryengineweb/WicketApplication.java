@@ -53,6 +53,7 @@ public class WicketApplication extends WebApplication {
     @Override
     public void init() {
         super.init();
+        System.loadLibrary("HDFql");
         configureBootstrap();
         addResourceReplacement(JQueryResourceReference.get(),
                 new UrlResourceReference(
