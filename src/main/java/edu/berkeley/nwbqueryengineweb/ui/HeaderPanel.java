@@ -42,12 +42,15 @@ public class HeaderPanel extends Panel {
         Navbar navbar = new Navbar("navbar");
         navbar.setBrandName(Model.of("NWB Query Engine"));
 
-        DropDownButton dropdown = new NavbarDropDownButton(Model.of("DropDown")) {
+        DropDownButton dropdown = new NavbarDropDownButton(Model.of("Menu")) {
             @Override
-            protected List<AbstractLink> newSubMenuButtons(String s) {
-
-             return null;
+            protected List<AbstractLink> newSubMenuButtons(String buttonMarkupId) {
+                final List<AbstractLink> subMenu = new ArrayList<AbstractLink>();
+                subMenu.add(new MenuBookmarkablePageLink(FileUploadPage.class, Model.of("File Upload"))
+                        .setIconType(FontAwesomeIconType.user));
+                return subMenu;
             }
+
         };
 
         navbar.addComponents(new ImmutableNavbarComponent(dropdown, Navbar.ComponentPosition.RIGHT));

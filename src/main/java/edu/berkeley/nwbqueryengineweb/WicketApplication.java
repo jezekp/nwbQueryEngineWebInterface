@@ -22,7 +22,9 @@ import de.agilecoders.wicket.core.settings.ThemeProvider;
 import de.agilecoders.wicket.less.BootstrapLess;
 import de.agilecoders.wicket.themes.markup.html.bootswatch.BootswatchTheme;
 import de.agilecoders.wicket.themes.markup.html.bootswatch.BootswatchThemeProvider;
+import de.agilecoders.wicket.themes.markup.html.google.GoogleTheme;
 import de.agilecoders.wicket.webjars.WicketWebjars;
+import edu.berkeley.nwbqueryengineweb.ui.FileUploadPage;
 import edu.berkeley.nwbqueryengineweb.ui.HomePage;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -60,7 +62,7 @@ public class WicketApplication extends WebApplication {
                         Url.parse("http://code.jquery.com/jquery-1.11.0.min.js")));
         
 //        mountPage("account", UserAccountPage.class);
-//        mountPage("fileUpload", FileUploadPage.class);
+        mountPage("fileUpload", FileUploadPage.class);
         getComponentInstantiationListeners().add(new SpringComponentInjector(this));
     }
 
