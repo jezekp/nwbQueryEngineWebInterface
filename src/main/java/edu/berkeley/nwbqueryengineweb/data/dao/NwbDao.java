@@ -61,6 +61,7 @@ public class NwbDao implements GenericDao<NwbData> {
                         NwbData res = new NwbData();
                         res.setDataSet(nwbResult.getDataSet());
                         res.setValue(nwbResult.getValue());
+                        res.setFile(item.getName());
                         result.add(res);
                     }
 

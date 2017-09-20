@@ -30,10 +30,14 @@
         <div id="bd">
             <form id="searchForm" wicket:id="form">
                 <input id="searchField" wicket:id="searchField" type="text"/>
-                <input wicket:id="send" type="submit" value="Send"/>
+                <input id="sendButton" wicket:id="send" type="submit" value="Search"> </input>
             </form>
-                   <span wicket:id="listview">
-    <span wicket:id="label">label</span><br/>
+            <span wicket:id="listview">
+                <table>
+                    <tr>
+                        <td><span class="smaller-font" wicket:id="file"></span></td><td> <span class="bigger-font" wicket:id="dataset"></span></td><td><span class="smaller-font" wicket:id="value"></span></td>
+                    </tr>
+                    </table>
 </span>
         </div>
     </div>

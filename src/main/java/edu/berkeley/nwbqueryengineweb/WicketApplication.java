@@ -70,7 +70,7 @@ public class WicketApplication extends WebApplication {
         final IBootstrapSettings settings = new BootstrapSettings();
         settings.useCdnResources(true);
         
-        final ThemeProvider themeProvider = new BootswatchThemeProvider(BootswatchTheme.Spacelab);
+        final ThemeProvider themeProvider = new BootswatchThemeProvider(BootswatchTheme.United);
         settings.setThemeProvider(themeProvider);
         
         Bootstrap.install(this, settings);

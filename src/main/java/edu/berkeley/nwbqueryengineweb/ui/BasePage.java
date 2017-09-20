@@ -40,12 +40,8 @@ public class BasePage extends WebPage {
 
         add(new HtmlTag("html"));
 
-        add(new MetaTag("description", Model.of("description"), Model.of("Tansu")));
-        add(new MetaTag("author", Model.of("author"), Model.of("Copper Arrow Software Services")));
-
         //add header panel
         add(new HeaderPanel("header"));
-        add(new FooterPanel("footer"));
 
     }
 

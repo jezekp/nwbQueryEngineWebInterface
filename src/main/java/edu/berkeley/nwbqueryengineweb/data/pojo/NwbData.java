@@ -30,6 +30,7 @@ public class NwbData implements Serializable {
 
     private String dataSet;
     private Object value;
+    private String file;
 
     public String getDataSet() {
         return dataSet;
@@ -45,5 +46,13 @@ public class NwbData implements Serializable {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 }

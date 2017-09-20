@@ -16,6 +16,12 @@
 
 package edu.berkeley.nwbqueryengineweb.ui;
 
+import com.sun.deploy.security.ruleset.DRSResult;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapButton;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
+import de.agilecoders.wicket.core.markup.html.bootstrap.components.progress.ProgressBar;
+import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
+import de.agilecoders.wicket.core.markup.html.bootstrap.list.BootstrapListView;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.services.GenericService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -40,6 +46,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+
+
 public class HomePage extends BasePage {
     private static final long serialVersionUID = 1L;
 
@@ -49,25 +57,27 @@ public class HomePage extends BasePage {
     public HomePage(final PageParameters parameters) {
         super(parameters);
 
-
-        final Form form = new Form("form");
-        final ListView<NwbData> listview = new ListView<NwbData>("listview", new LinkedList<NwbData>()) {
+        final BootstrapForm form = new BootstrapForm("form");
+        final BootstrapListView<NwbData> listview = new BootstrapListView<NwbData>("listview", new LinkedList<NwbData>()) {
             protected void populateItem(ListItem<NwbData> item) {
                 NwbData nwbData = item.getModelObject();
-                item.add(new Label("label", nwbData.getDataSet()));
+                item.add(new Label("dataset", nwbData.getDataSet()));
+                item.add(new Label("value", nwbData.getValue().toString()));
+                item.add(new Label("file", nwbData.getFile()));
             }
         };
-
 
 
 
         add(form);
         add(listview);
 
+
+
         final TextField<String> searchField = new TextField<String>("searchField", Model.of(""));
         form.add(searchField);
 
-        Button send = new Button("send") {
+        BootstrapButton send = new BootstrapButton("send", Buttons.Type.Primary) {
 
             @Override
             public void onSubmit() {

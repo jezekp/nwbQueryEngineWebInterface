@@ -40,20 +40,14 @@ public class HeaderPanel extends Panel {
 
     private Navbar navbar() {
         Navbar navbar = new Navbar("navbar");
-        navbar.setInverted(true);
-        navbar.setPosition(Navbar.Position.TOP);
         navbar.setBrandName(Model.of("NWB Query Engine"));
 
         DropDownButton dropdown = new NavbarDropDownButton(Model.of("DropDown")) {
-
             @Override
-            protected List<AbstractLink> newSubMenuButtons(String buttonMarkupId) {
-                final List<AbstractLink> subMenu = new ArrayList<AbstractLink>();
-//                subMenu.add(new MenuBookmarkablePageLink(UserAccountPage.class, Model.of("Account"))
-//                                .setIconType(FontAwesomeIconType.user));
-                return subMenu;
-            }
+            protected List<AbstractLink> newSubMenuButtons(String s) {
 
+             return null;
+            }
         };
 
         navbar.addComponents(new ImmutableNavbarComponent(dropdown, Navbar.ComponentPosition.RIGHT));
