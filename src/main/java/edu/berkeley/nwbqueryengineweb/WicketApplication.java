@@ -57,7 +57,7 @@ public class WicketApplication extends WebApplication {
         super.init();
         System.loadLibrary("HDFql");
         configureBootstrap();
-        addResourceReplacement(JQueryResourceReference.get(),
+        addResourceReplacement(JQueryResourceReference.getV1(),
                 new UrlResourceReference(
                         Url.parse("http://code.jquery.com/jquery-1.11.0.min.js")));
         

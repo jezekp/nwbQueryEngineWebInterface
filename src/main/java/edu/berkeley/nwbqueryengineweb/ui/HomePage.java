@@ -18,6 +18,7 @@ package edu.berkeley.nwbqueryengineweb.ui;
 
 import com.sun.deploy.security.ruleset.DRSResult;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapButton;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.components.progress.ProgressBar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
@@ -63,8 +64,14 @@ public class HomePage extends BasePage {
                 NwbData nwbData = item.getModelObject();
                 item.add(new Label("dataset", nwbData.getDataSet()));
                 item.add(new Label("value", nwbData.getValue().toString()));
-                item.add(new Label("file", nwbData.getFile()));
+                item.add(new BootstrapLink<String>("file", Model.of(nwbData.getFile())) {
+                    @Override
+                    public void onClick() {
+
+                    }
+                });
             }
+
         };
 
 

@@ -28,17 +28,30 @@
     <div class="container">
 
         <div id="bd">
-            <form id="searchForm" wicket:id="form">
-                <input id="searchField" wicket:id="searchField" type="text"/>
-                <input id="sendButton" wicket:id="send" type="submit" value="Search"> </input>
-            </form>
-            <span wicket:id="listview">
+            <div class="form-horizontal">
+                <form id="searchForm" wicket:id="form">
+                    <input id="searchField" class="form-control" wicket:id="searchField" type="text"/>
+                    <input id="sendButton" wicket:id="send" type="submit" value="Search"> </input>
+                </form>
+            </div>
+            <div wicket:id="listview">
                 <table>
                     <tr>
-                        <td><span class="smaller-font" wicket:id="file"></span></td><td> <span class="bigger-font" wicket:id="dataset"></span></td><td><span class="smaller-font" wicket:id="value"></span></td>
+                        <td><span class="bigger-font" wicket:id="dataset"></span></td>
+                        <td><span class="smaller-font" wicket:id="value"></span></td>
+                        <td>
+                            <form>
+                                <input class="searchField" wicket:id="file" type="submit" value="Download"> </input>
+                            </form>
+                        </td>
                     </tr>
-                    </table>
-</span>
+                    <tr>
+
+
+                    </tr>
+                </table>
+            </div>
+
         </div>
     </div>
 </wicket:extend>
