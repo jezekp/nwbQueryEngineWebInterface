@@ -87,9 +87,8 @@ body {
 #bd {
     width: 100%;
     background-color: #fff;
-    border: solid 3px green;
-
-
+    #border: solid 3px green;
+    float: left;
 }
 
 a, a:visited, a:hover, a:active {
@@ -112,10 +111,18 @@ h3 {
 
 td {
     padding: 2px;
-    border: solid 3px yellow;
+}
+
+th {
+    text-align: center;
+}
+
+table {
+    width: 100%;
 }
 
 #searchField {
+    padding: 20px;
     width: 500pt;
 }
 
@@ -123,7 +130,7 @@ td {
     width: 150pt;
 }
 .container {
-    border: solid 2px yellow;
+#border: solid 3px yellow;
 }
 
 .smaller-font {
@@ -139,6 +146,27 @@ td {
     display: inline;
 }
 
-table {
-    border: solid 3px red;
+.form-horizontal {
+    padding: 40px;
+    margin: 40px;
 }
+
+.floating {
+    float: left;
+    #padding: 10px;
+    margin: 10px;
+}
+
+.narrow {
+    max-width: 45%;
+}
+
+.wider {
+    max-width: 100%;
+}
+
+
+table {
+
+}
+

@@ -34,25 +34,109 @@
                     <input id="sendButton" wicket:id="send" type="submit" value="Search"> </input>
                 </form>
             </div>
-            <div wicket:id="listview">
-                <table>
+
+            <table class="table table-striped table-hover">
+                    <thead wicket:id="tableDiv">
+                    <th>
+                        File
+                    </th>
+                    <th>
+                        Dataset
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    </thead>
+                <div wicket:id="listview">
+
                     <tr>
+                        <td><span class="smaller-font" wicket:id="fileName"></span></td>
                         <td><span class="bigger-font" wicket:id="dataset"></span></td>
                         <td><span class="smaller-font" wicket:id="value"></span></td>
                         <td>
                             <form>
-                                <input class="searchField" wicket:id="file" type="submit" value="Download"> </input>
+                                <input class="searchField" wicket:id="file" type="submit"
+                                       value="Download File"> </input>
                             </form>
                         </td>
                     </tr>
-                    <tr>
+                </div>
+            </table>
+
+            <div class="panel panel-default floating narrow">
+                <div class="panel-heading">Who We Are</div>
+                <div class="panel-body">
+                    A Redwood Center for Theoretical Neuroscience research group is responsible for development of first
+                    version of NWB data format. A next step is a development of query engine that
+                    facilitates accessing data stored in the NWB format.
 
 
-                    </tr>
-                </table>
+                </div>
+            </div>
+            <div class="panel panel-default floating narrow">
+                <div class="panel-heading">Our Mission</div>
+                <div class="panel-body">
+                    Neurodata Without Borders is going to be a standarized way of storing neurophysiology data. Once
+                    data is stored a suitable mechanism for its accessing must be provided.
+                    As a solution we implemented a query engine that enables executing of easy-to-understand queries on
+                    a set of files.
+                    This web page facilitates working with the query engine by providing a simple user interface to
+                    stored data. When a query is executed and desired
+                    values are obtained a user can even download a file with data stored.
+
+                </div>
+            </div>
+            <div class="panel panel-default floating wider">
+                <div class="panel-heading">Query Examples</div>
+                <div class="panel-body">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <th>Query</th>
+                        <th>Description</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>analysis=(description LIKE whisker)</td>
+                            <td>selects all datasets description from an analysis group which contains a whisker
+                                string
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td> processing=(electrode_idx&gt;30)</td>
+                            <td> selects all electrode_idx datasets from a processing group which value &gt; 30</td>
+                        </tr>
+                        <tr>
+                            <td> epochs=(start_time&gt;200 &amp; stop_time&lt;400 &#124; stop_time&gt;1600)</td>
+                            <td> selects all epochs which start_time &gt; 200 and stop_time &lt; 400 or stop_time &gt;
+                                1600
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> epochs=(start_time)</td>
+                            <td> selects all epochs with a start_time dataset</td>
+                        </tr>
+                        <tr>
+                            <td> data=(unit LIKE unkno)</td>
+                            <td> selects all datasets data with attributes containing a substring unkno</td>
+                        </tr>
+                        <tr>
+                            <td>pole_in/data=(unit LIKE unkno)</td>
+                            <td> takes into account only data within a pole_in group</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="alert alert-dismissible alert-info floating wider">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Stored files</strong> <span wicket:id="countOfFiles" class="alert-link"></span>
             </div>
 
         </div>
+
+
     </div>
 </wicket:extend>
 </body>

@@ -32,4 +32,6 @@ import java.util.List;
 public interface GenericService<T> {
 
     List<T> loadData(String query);
+    int countOfFiles();
+    String getRootDir();
 }

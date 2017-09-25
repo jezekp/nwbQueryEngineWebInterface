@@ -47,7 +47,7 @@ public class HeaderPanel extends Panel {
             protected List<AbstractLink> newSubMenuButtons(String buttonMarkupId) {
                 final List<AbstractLink> subMenu = new ArrayList<AbstractLink>();
                 subMenu.add(new MenuBookmarkablePageLink(FileUploadPage.class, Model.of("File Upload"))
-                        .setIconType(FontAwesomeIconType.user));
+                        .setIconType(FontAwesomeIconType.file));
                 return subMenu;
             }
 

@@ -51,7 +51,7 @@ public class NwbDao implements GenericDao<NwbData> {
 
         List<NwbData> result = new LinkedList<NwbData>();
 
-        File files = new File(fileFolder);
+        File files = new File(getRootDir());
         if(files.isDirectory()) {
             File[] filesNames = files.listFiles();
             for(File item : filesNames) {
@@ -61,7 +61,7 @@ public class NwbDao implements GenericDao<NwbData> {
                         NwbData res = new NwbData();
                         res.setDataSet(nwbResult.getDataSet());
                         res.setValue(nwbResult.getValue());
-                        res.setFile(item.getName());
+                        res.setFile(item);
                         result.add(res);
                     }
 
@@ -74,5 +74,15 @@ public class NwbDao implements GenericDao<NwbData> {
 
 
         return result;
+    }
+
+    @Override
+    public int countOfFiles() {
+        return new File(getRootDir()).list().length;
+    }
+
+    @Override
+    public String getRootDir() {
+        return fileFolder;
     }
 }

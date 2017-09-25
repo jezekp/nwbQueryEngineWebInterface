@@ -46,4 +46,14 @@ public class NwbService implements GenericService<NwbData> {
         res = nwbDao.getData(query);
         return res;
     }
+
+    @Override
+    public int countOfFiles() {
+        return nwbDao.countOfFiles();
+    }
+
+    @Override
+    public String getRootDir() {
+        return nwbDao.getRootDir();
+    }
 }

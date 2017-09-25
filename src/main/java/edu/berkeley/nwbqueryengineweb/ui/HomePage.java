@@ -23,11 +23,15 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.components.progress.ProgressBar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.core.markup.html.bootstrap.list.BootstrapListView;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.BootstrapDefaultDataTable;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.services.GenericService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -39,18 +43,25 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.file.File;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.time.Duration;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 
-
 public class HomePage extends BasePage {
     private static final long serialVersionUID = 1L;
+
+    Log logger = LogFactory.getLog(getClass());
 
     @SpringBean
     GenericService<NwbData> dataService;
@@ -58,15 +69,23 @@ public class HomePage extends BasePage {
     public HomePage(final PageParameters parameters) {
         super(parameters);
 
+
         final BootstrapForm form = new BootstrapForm("form");
         final BootstrapListView<NwbData> listview = new BootstrapListView<NwbData>("listview", new LinkedList<NwbData>()) {
             protected void populateItem(ListItem<NwbData> item) {
-                NwbData nwbData = item.getModelObject();
+                final NwbData nwbData = item.getModelObject();
+
+                item.add(new Label("fileName", nwbData.getFile().getName()));
                 item.add(new Label("dataset", nwbData.getDataSet()));
                 item.add(new Label("value", nwbData.getValue().toString()));
-                item.add(new BootstrapLink<String>("file", Model.of(nwbData.getFile())) {
+                item.add(new BootstrapLink<String>("file", Model.of(nwbData.getFile().getAbsolutePath()), Buttons.Type.Link) {
                     @Override
                     public void onClick() {
+                        final File file = new File(nwbData.getFile());
+                        logger.debug("Downloading file: " + nwbData.getFile());
+                        IResourceStream resourceStream = new FileResourceStream(
+                                new org.apache.wicket.util.file.File(file));
+                        getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream, file.getName()));
 
                     }
                 });
@@ -75,23 +94,28 @@ public class HomePage extends BasePage {
         };
 
 
+        final TextField<String> searchField = new TextField<String>("searchField", Model.of(""));
 
+
+        final WebMarkupContainer tableDiv = new WebMarkupContainer("tableDiv");
+        tableDiv.setVisible(false);
+
+        add(tableDiv);
         add(form);
         add(listview);
+        add(new Label("countOfFiles", dataService.countOfFiles() + " " + searchField.getValue()));
 
-
-
-        final TextField<String> searchField = new TextField<String>("searchField", Model.of(""));
-        form.add(searchField);
 
         BootstrapButton send = new BootstrapButton("send", Buttons.Type.Primary) {
 
             @Override
             public void onSubmit() {
                 listview.setModel(Model.ofList(dataService.loadData(searchField.getValue())));
+                tableDiv.setVisible(searchField.getValue().length() > 0);
             }
         };
         form.add(send);
+        form.add(searchField);
 
     }
 

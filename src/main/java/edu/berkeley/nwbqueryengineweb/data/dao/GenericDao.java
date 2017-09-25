@@ -28,5 +28,7 @@ import java.util.List;
  **********************************************************************************************************************/
 public interface GenericDao<T> {
 
-    public List<T> getData(String query);
+    List<T> getData(String query);
+    int countOfFiles();
+    String getRootDir();
 }

@@ -16,20 +16,36 @@
 
 package edu.berkeley.nwbqueryengineweb.ui;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationMessage;
+import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
+import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Alert;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.fileinput.BootstrapFileInput;
+
 import java.util.List;
+
+import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
+import edu.berkeley.nwbqueryengineweb.services.GenericService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
+
+import java.io.File;
 
 /**
- *
  * @author dbeer
  */
 public class FileUploadPage extends BasePage {
+
+
+    @SpringBean
+    GenericService<NwbData> dataService;
 
     public FileUploadPage(final PageParameters params) {
         super(params);
@@ -38,19 +54,50 @@ public class FileUploadPage extends BasePage {
 
     private void addFileUploafForm() {
         final IModel<List<FileUpload>> model = new ListModel<FileUpload>();
-        BootstrapForm<Void> form = new BootstrapForm<Void>("form");
+        final BootstrapForm<Void> form = new BootstrapForm<Void>("form");
         form.setOutputMarkupId(true);
         add(form);
-        
+        final NotificationPanel fp = new NotificationPanel("feedback");
+        fp.setOutputMarkupId(true);
+        fp.hideAfter(Duration.seconds(10));
+        add(fp);
+
         BootstrapFileInput bootstrapFileInput = new BootstrapFileInput("bootstrapFileinput", model) {
+
+            @Override
+            protected void onError(AjaxRequestTarget target) {
+                target.add(fp);
+            }
+
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 super.onSubmit(target);
 
                 List<FileUpload> fileUploads = model.getObject();
+                target.add(fp);
                 if (fileUploads != null) {
                     for (FileUpload upload : fileUploads) {
-                        success("Uploaded: " + upload.getClientFileName());
+                        if (upload != null) {
+
+
+
+                            // write to a new file
+                            File newFile = new File(dataService.getRootDir()
+                                    + upload.getClientFileName());
+                            try {
+
+                                if(newFile.exists()) {
+                                    throw new Exception("File already exists");
+                                }
+
+                                newFile.createNewFile();
+                                upload.writeTo(newFile);
+
+                                success(new NotificationMessage(Model.of("Saved"), Model.of(upload.getClientFileName())));
+                            } catch (Exception e) {
+                                error(new NotificationMessage(Model.of(upload.getClientFileName()), Model.of(e.getLocalizedMessage())));
+                            }
+                        }
                     }
                 }
 
@@ -58,7 +105,6 @@ public class FileUploadPage extends BasePage {
         };
         form.add(bootstrapFileInput);
     }
-    
-    
-    
+
+
 }

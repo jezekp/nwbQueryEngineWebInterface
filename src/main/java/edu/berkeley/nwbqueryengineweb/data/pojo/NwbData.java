@@ -1,6 +1,7 @@
 package edu.berkeley.nwbqueryengineweb.data.pojo;
 
 import java.io.Serializable;
+import java.io.File;
 
 /***********************************************************************************************************************
  *
@@ -30,7 +31,7 @@ public class NwbData implements Serializable {
 
     private String dataSet;
     private Object value;
-    private String file;
+    private File file;
 
     public String getDataSet() {
         return dataSet;
@@ -48,11 +49,11 @@ public class NwbData implements Serializable {
         this.value = value;
     }
 
-    public String getFile() {
+    public File getFile() {
         return file;
     }
 
-    public void setFile(String file) {
+    public void setFile(File file) {
         this.file = file;
     }
 }
