@@ -5,11 +5,10 @@ import edu.berkeley.nwbqueryengine.data.NwbResult;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class NwbDao implements GenericDao<NwbData> {
 
         File files = new File(getRootDir());
         if(files.isDirectory()) {
-            File[] filesNames = files.listFiles();
+            File[] filesNames = files.listFiles(new NwbFileFilter());
             for(File item : filesNames) {
                 try {
                     List<NwbResult> tmp = nwbQueryEngine.executeQuery(item.getAbsolutePath(), query);
@@ -78,11 +77,19 @@ public class NwbDao implements GenericDao<NwbData> {
 
     @Override
     public int countOfFiles() {
-        return new File(getRootDir()).list().length;
+        return new File(getRootDir()).listFiles(new NwbFileFilter()).length;
     }
 
     @Override
     public String getRootDir() {
         return fileFolder;
+    }
+
+    private class NwbFileFilter implements FileFilter {
+
+        @Override
+        public boolean accept(File pathname) {
+            return pathname.getName().toLowerCase().endsWith(".nwb");
+        }
     }
 }

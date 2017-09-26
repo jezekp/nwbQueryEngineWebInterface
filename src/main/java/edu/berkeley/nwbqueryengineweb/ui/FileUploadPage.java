@@ -90,6 +90,10 @@ public class FileUploadPage extends BasePage {
                                     throw new Exception("File already exists");
                                 }
 
+                                if(!upload.getClientFileName().toLowerCase().endsWith(".nwb")) {
+                                    throw new Exception("File must be a nwb file");
+                                }
+
                                 newFile.createNewFile();
                                 upload.writeTo(newFile);
 
