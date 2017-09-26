@@ -83,7 +83,7 @@ public class FileUploadPage extends BasePage {
 
                             // write to a new file
                             File newFile = new File(dataService.getRootDir()
-                                    + upload.getClientFileName());
+                                   + "/" + upload.getClientFileName());
                             try {
 
                                 if(newFile.exists()) {
