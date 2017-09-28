@@ -36,33 +36,33 @@
             </div>
 
             <table class="table table-striped table-hover">
-                    <thead wicket:id="tableDiv">
-                    <th>
-                        File
-                    </th>
-                    <th>
-                        Dataset
-                    </th>
-                    <th>
-                        Value
-                    </th>
-                    </thead>
-                <div wicket:id="listview">
+                <thead wicket:id="tableDiv">
+                <th>
+                    File
+                </th>
+                <th>
+                    Dataset
+                </th>
+                <th>
+                    Value
+                </th>
+                </thead>
+                <tr wicket:id="listview">
+                    <td><span class="smaller-font" wicket:id="fileName"></span></td>
+                    <td><span class="bigger-font" wicket:id="dataset"></span></td>
+                    <td><span class="smaller-font" wicket:id="value"></span></td>
+                    <td>
+                        <form>
+                            <input class="searchField" wicket:id="file" type="submit"
+                                   value="Download File"> </input>
+                        </form>
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td><span class="smaller-font" wicket:id="fileName"></span></td>
-                        <td><span class="bigger-font" wicket:id="dataset"></span></td>
-                        <td><span class="smaller-font" wicket:id="value"></span></td>
-                        <td>
-                            <form>
-                                <input class="searchField" wicket:id="file" type="submit"
-                                       value="Download File"> </input>
-                            </form>
-                        </td>
-                    </tr>
-                </div>
             </table>
-
+            <div class="navigator">
+                <ul wicket:id="navigator"></ul>
+            </div>
             <div class="panel panel-default floating narrow">
                 <div class="panel-heading">Who We Are</div>
                 <div class="panel-body">

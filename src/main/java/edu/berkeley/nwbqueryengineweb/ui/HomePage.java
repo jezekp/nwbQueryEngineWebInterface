@@ -21,6 +21,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.core.markup.html.bootstrap.list.BootstrapListView;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.services.GenericService;
 import org.apache.commons.logging.Log;
@@ -29,6 +30,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -53,7 +56,7 @@ public class HomePage extends BasePage {
 
 
         final BootstrapForm form = new BootstrapForm("form");
-        final BootstrapListView<NwbData> listview = new BootstrapListView<NwbData>("listview", new LinkedList<NwbData>()) {
+        final PageableListView<NwbData> listview = new PageableListView<NwbData>("listview", new LinkedList<NwbData>(), 50) {
             protected void populateItem(ListItem<NwbData> item) {
                 final NwbData nwbData = item.getModelObject();
 
@@ -85,6 +88,9 @@ public class HomePage extends BasePage {
         add(tableDiv);
         add(form);
         add(listview);
+        final BootstrapPagingNavigator pagingNavigator = new BootstrapPagingNavigator("navigator", listview);
+        pagingNavigator.setVisible(false);
+        add(pagingNavigator);
         add(new Label("countOfFiles", dataService.countOfFiles() + " " + searchField.getValue()));
 
 
@@ -93,7 +99,9 @@ public class HomePage extends BasePage {
             @Override
             public void onSubmit() {
                 listview.setModel(Model.ofList(dataService.loadData(searchField.getValue())));
-                tableDiv.setVisible(searchField.getValue().length() > 0);
+                boolean visible = searchField.getValue().length() > 0;
+                tableDiv.setVisible(visible);
+                pagingNavigator.setVisible(visible);
             }
         };
         form.add(send);

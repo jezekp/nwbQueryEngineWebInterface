@@ -79,8 +79,6 @@ public class FileUploadPage extends BasePage {
                     for (FileUpload upload : fileUploads) {
                         if (upload != null) {
 
-
-
                             // write to a new file
                             File newFile = new File(dataService.getRootDir()
                                    + "/" + upload.getClientFileName());
