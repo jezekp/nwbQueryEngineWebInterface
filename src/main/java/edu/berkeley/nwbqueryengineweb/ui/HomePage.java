@@ -16,9 +16,11 @@
 
 package edu.berkeley.nwbqueryengineweb.ui;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
+import de.agilecoders.wicket.core.markup.html.bootstrap.components.progress.ProgressBar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.core.markup.html.bootstrap.list.BootstrapListView;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -26,12 +28,16 @@ import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.services.GenericService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -39,8 +45,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
+import org.apache.wicket.util.time.Duration;
 
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class HomePage extends BasePage {
@@ -54,9 +62,23 @@ public class HomePage extends BasePage {
     public HomePage(final PageParameters parameters) {
         super(parameters);
 
+        logger.debug("Home page created");
+
+        final TextField<String> searchField = new TextField<String>("searchField", Model.of(""));
+
+        final List<NwbData> data = new LinkedList<NwbData>();
+
+        final IModel<List<NwbData>> dataModel =  new LoadableDetachableModel()
+        {
+            protected List<NwbData> load() {
+                logger.debug("I am called: " + data.size());
+                return data;
+            }
+        };
+
 
         final BootstrapForm form = new BootstrapForm("form");
-        final PageableListView<NwbData> listview = new PageableListView<NwbData>("listview", new LinkedList<NwbData>(), 50) {
+        final PageableListView<NwbData> listview = new PageableListView<NwbData>("listview", dataModel, 50) {
             protected void populateItem(ListItem<NwbData> item) {
                 final NwbData nwbData = item.getModelObject();
 
@@ -79,29 +101,34 @@ public class HomePage extends BasePage {
         };
 
 
-        final TextField<String> searchField = new TextField<String>("searchField", Model.of(""));
 
 
         final WebMarkupContainer tableDiv = new WebMarkupContainer("tableDiv");
-        tableDiv.setVisible(false);
+        tableDiv.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
 
-        add(tableDiv);
+        add(tableDiv.setOutputMarkupId(true));
         add(form);
-        add(listview);
+        tableDiv.add(listview);
         final BootstrapPagingNavigator pagingNavigator = new BootstrapPagingNavigator("navigator", listview);
-        pagingNavigator.setVisible(false);
-        add(pagingNavigator);
+        pagingNavigator.setEnabled(false);
+        tableDiv.setEnabled(false);
+        add(pagingNavigator.setOutputMarkupId(true));
+
         add(new Label("countOfFiles", dataService.countOfFiles() + " " + searchField.getValue()));
 
 
-        BootstrapButton send = new BootstrapButton("send", Buttons.Type.Primary) {
+        BootstrapAjaxButton send = new BootstrapAjaxButton("send", Buttons.Type.Primary) {
 
             @Override
-            public void onSubmit() {
-                listview.setModel(Model.ofList(dataService.loadData(searchField.getValue())));
+            public void onSubmit(AjaxRequestTarget target) {
                 boolean visible = searchField.getValue().length() > 0;
-                tableDiv.setVisible(visible);
-                pagingNavigator.setVisible(visible);
+                tableDiv.setEnabled(visible);
+                pagingNavigator.setEnabled(visible);
+                target.add(tableDiv);
+                target.add(pagingNavigator);
+                //listview.setModel(Model.ofList(dataService.loadData(searchField.getValue())));
+                data.clear();
+                data.addAll(dataService.loadData(searchField.getValue()));
             }
         };
         form.add(send);
