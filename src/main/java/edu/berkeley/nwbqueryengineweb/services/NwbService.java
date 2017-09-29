@@ -2,10 +2,10 @@ package edu.berkeley.nwbqueryengineweb.services;
 
 import edu.berkeley.nwbqueryengineweb.data.dao.GenericDao;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
+import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /***********************************************************************************************************************
@@ -40,16 +40,16 @@ public class NwbService implements GenericService<NwbData> {
     GenericDao<NwbData> nwbDao;
 
     @Override
-    public List<NwbData> loadData(String query) {
+    public List<NwbData> loadData(String query, File file) {
         System.out.println("Loading data");
         List<NwbData> res;
-        res = nwbDao.getData(query);
+        res = nwbDao.getData(query, file);
         return res;
     }
 
     @Override
-    public int countOfFiles() {
-        return nwbDao.countOfFiles();
+    public File[] getFiles() {
+        return nwbDao.getFiles();
     }
 
     @Override

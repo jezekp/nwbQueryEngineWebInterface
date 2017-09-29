@@ -17,12 +17,9 @@
 package edu.berkeley.nwbqueryengineweb.ui;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
-import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
-import de.agilecoders.wicket.core.markup.html.bootstrap.components.progress.ProgressBar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
-import de.agilecoders.wicket.core.markup.html.bootstrap.list.BootstrapListView;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.services.GenericService;
@@ -35,7 +32,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -55,6 +51,7 @@ public class HomePage extends BasePage {
     private static final long serialVersionUID = 1L;
 
     Log logger = LogFactory.getLog(getClass());
+    private int counter;
 
     @SpringBean
     GenericService<NwbData> dataService;
@@ -67,11 +64,18 @@ public class HomePage extends BasePage {
         final TextField<String> searchField = new TextField<String>("searchField", Model.of(""));
 
         final List<NwbData> data = new LinkedList<NwbData>();
+        final File[] files = getFiles();
 
-        final IModel<List<NwbData>> dataModel =  new LoadableDetachableModel()
-        {
+
+        final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
+
             protected List<NwbData> load() {
-                logger.debug("I am called: " + data.size());
+                logger.debug("I am called: " + data.size() + ", i: " + counter);
+                //read continuously all files with data - each calling of this method read one file
+                if (counter < files.length) {
+                    data.addAll(dataService.loadData(searchField.getValue(), files[increaseCounter()]));
+                }
+
                 return data;
             }
         };
@@ -101,20 +105,19 @@ public class HomePage extends BasePage {
         };
 
 
-
-
         final WebMarkupContainer tableDiv = new WebMarkupContainer("tableDiv");
         tableDiv.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
-
         add(tableDiv.setOutputMarkupId(true));
         add(form);
         tableDiv.add(listview);
         final BootstrapPagingNavigator pagingNavigator = new BootstrapPagingNavigator("navigator", listview);
+        pagingNavigator.getPageable().getCurrentPage();
         pagingNavigator.setEnabled(false);
+        pagingNavigator.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
         tableDiv.setEnabled(false);
         add(pagingNavigator.setOutputMarkupId(true));
 
-        add(new Label("countOfFiles", dataService.countOfFiles() + " " + searchField.getValue()));
+        add(new Label("countOfFiles", files.length + " " + searchField.getValue()));
 
 
         BootstrapAjaxButton send = new BootstrapAjaxButton("send", Buttons.Type.Primary) {
@@ -128,12 +131,30 @@ public class HomePage extends BasePage {
                 target.add(pagingNavigator);
                 //listview.setModel(Model.ofList(dataService.loadData(searchField.getValue())));
                 data.clear();
-                data.addAll(dataService.loadData(searchField.getValue()));
+                clearCounter();
+                //data.addAll(dataService.loadData(searchField.getValue()));
             }
         };
         form.add(send);
         form.add(searchField);
 
+    }
+
+    private File[] getFiles() {
+        java.io.File[] files = dataService.getFiles();
+        File[] res = new File[files.length];
+
+        for (int i = 0; i < files.length; i++) {
+            res[i] = new File(files[i]);
+        }
+        return res;
+    }
+
+    private int increaseCounter() {
+        return counter++;
+    }
+    private void clearCounter() {
+        counter = 0;
     }
 
 }

@@ -3,6 +3,9 @@ package edu.berkeley.nwbqueryengineweb.data.dao;
 import edu.berkeley.nwbqueryengine.api.FileInput;
 import edu.berkeley.nwbqueryengine.data.NwbResult;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
+import edu.berkeley.nwbqueryengineweb.data.utils.NwbFileFilter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -44,31 +47,28 @@ public class NwbDao implements GenericDao<NwbData> {
     @Value("${files.folder}")
     private String fileFolder;
 
+    Log logger = LogFactory.getLog(getClass());
+
 
     @Override
-    public List<NwbData> getData(String query) {
+    public List<NwbData> getData(String query, File file) {
 
         List<NwbData> result = new LinkedList<NwbData>();
 
-        File files = new File(getRootDir());
-        if(files.isDirectory()) {
-            File[] filesNames = files.listFiles(new NwbFileFilter());
-            for(File item : filesNames) {
-                try {
-                    List<NwbResult> tmp = nwbQueryEngine.executeQuery(item.getAbsolutePath(), query);
-                    for(NwbResult nwbResult : tmp) {
-                        NwbData res = new NwbData();
-                        res.setDataSet(nwbResult.getDataSet());
-                        res.setValue(nwbResult.getValue());
-                        res.setFile(item);
-                        result.add(res);
-                    }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+        try {
+            List<NwbResult> tmp = nwbQueryEngine.executeQuery(file.getAbsolutePath(), query);
+            for (NwbResult nwbResult : tmp) {
+                NwbData res = new NwbData();
+                res.setDataSet(nwbResult.getDataSet());
+                res.setValue(nwbResult.getValue());
+                res.setFile(file);
+                result.add(res);
             }
+
+        } catch (Exception e) {
+            logger.error(e);
+            throw new RuntimeException(e);
         }
 
 
@@ -76,8 +76,8 @@ public class NwbDao implements GenericDao<NwbData> {
     }
 
     @Override
-    public int countOfFiles() {
-        return new File(getRootDir()).listFiles(new NwbFileFilter()).length;
+    public File[] getFiles() {
+        return new File(getRootDir()).listFiles(new NwbFileFilter());
     }
 
     @Override
@@ -85,11 +85,5 @@ public class NwbDao implements GenericDao<NwbData> {
         return fileFolder;
     }
 
-    private class NwbFileFilter implements FileFilter {
 
-        @Override
-        public boolean accept(File pathname) {
-            return pathname.getName().toLowerCase().endsWith(".nwb");
-        }
-    }
 }

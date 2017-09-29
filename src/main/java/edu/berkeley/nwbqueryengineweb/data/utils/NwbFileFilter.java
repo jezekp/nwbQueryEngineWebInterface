@@ -1,8 +1,7 @@
-package edu.berkeley.nwbqueryengineweb.services;
+package edu.berkeley.nwbqueryengineweb.data.utils;
 
-
-import java.util.List;
 import java.io.File;
+import java.io.FileFilter;
 
 /***********************************************************************************************************************
  *
@@ -25,12 +24,13 @@ import java.io.File;
  *
  ***********************************************************************************************************************
  *
- * GenericService, 2017/09/18 15:30 petr-jezek
+ * NwbFileFilter, 2017/09/29 10:00 petr-jezek
  *
  **********************************************************************************************************************/
-public interface GenericService<T> {
+public class NwbFileFilter implements FileFilter {
 
-    List<T> loadData(String query, File file);
-    File[] getFiles();
-    String getRootDir();
+    @Override
+    public boolean accept(File pathname) {
+        return pathname.getName().toLowerCase().endsWith(".nwb");
+    }
 }

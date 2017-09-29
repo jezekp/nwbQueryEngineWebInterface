@@ -1,5 +1,7 @@
 package edu.berkeley.nwbqueryengineweb.data.dao;
 
+import java.io.File;
+
 import java.util.List;
 
 /***********************************************************************************************************************
@@ -28,7 +30,7 @@ import java.util.List;
  **********************************************************************************************************************/
 public interface GenericDao<T> {
 
-    List<T> getData(String query);
-    int countOfFiles();
+    List<T> getData(String query, File file);
+    File[] getFiles();
     String getRootDir();
 }
