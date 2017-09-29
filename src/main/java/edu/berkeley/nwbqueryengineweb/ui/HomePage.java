@@ -19,6 +19,7 @@ package edu.berkeley.nwbqueryengineweb.ui;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
+import de.agilecoders.wicket.core.markup.html.bootstrap.components.progress.ProgressBar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
@@ -27,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
@@ -66,6 +68,23 @@ public class HomePage extends BasePage {
         final List<NwbData> data = new LinkedList<NwbData>();
         final File[] files = getFiles();
 
+        final WebMarkupContainer dataDiv = new WebMarkupContainer("dataDiv");
+        dataDiv.setOutputMarkupPlaceholderTag(true);
+        dataDiv.setOutputMarkupId(true);
+
+
+        final Label percCompleted = new Label("percCompleted", Model.of(0));
+        //percCompleted.setOutputMarkupId(true);
+        percCompleted.setOutputMarkupPlaceholderTag(true);
+        dataDiv.add(percCompleted);
+
+        final ProgressBar progressBar = new ProgressBar("progressBar", Model.of(0));
+        progressBar.setOutputMarkupPlaceholderTag(true);
+        progressBar.striped(true);
+        progressBar.active(true);
+        //progressBar.setOutputMarkupId(true);
+        dataDiv.add(progressBar);
+
 
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
 
@@ -74,6 +93,15 @@ public class HomePage extends BasePage {
                 //read continuously all files with data - each calling of this method read one file
                 if (counter < files.length) {
                     data.addAll(dataService.loadData(searchField.getValue(), files[increaseCounter()]));
+
+                    int progressValue = Math.round(counter / (float) files.length * 100);
+                    logger.debug("Progress bar:" + progressValue);
+                    progressBar.value(progressValue);
+                    percCompleted.setDefaultModel(Model.of(progressValue));
+                }
+
+                if(counter == files.length && data.isEmpty()) {
+                    dataDiv.setVisible(false);
                 }
 
                 return data;
@@ -104,39 +132,70 @@ public class HomePage extends BasePage {
 
         };
 
+        add(form);
 
         final WebMarkupContainer tableDiv = new WebMarkupContainer("tableDiv");
-        tableDiv.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
-        add(tableDiv.setOutputMarkupId(true));
-        add(form);
+
+        tableDiv.setOutputMarkupPlaceholderTag(true);
+        //tableDiv.setOutputMarkupId(true);
+        dataDiv.add(tableDiv);
+
         tableDiv.add(listview);
         final BootstrapPagingNavigator pagingNavigator = new BootstrapPagingNavigator("navigator", listview);
-        pagingNavigator.getPageable().getCurrentPage();
-        pagingNavigator.setEnabled(false);
-        pagingNavigator.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
-        tableDiv.setEnabled(false);
-        add(pagingNavigator.setOutputMarkupId(true));
+        pagingNavigator.setOutputMarkupPlaceholderTag(true);
+        dataDiv.add(pagingNavigator.setOutputMarkupId(true));
 
         add(new Label("countOfFiles", files.length + " " + searchField.getValue()));
 
+//        dataDiv.setVisible(false);
+//        tableDiv.setVisible(false);
+//        pagingNavigator.setVisible(false);
+//        progressBar.setVisible(false);
+//        percCompleted.setVisible(false);
+
+        final Behavior refresh1 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
+        final Behavior refresh2 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
+        final Behavior refresh3 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
+        final Behavior refresh4 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
+        final Behavior refresh5 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
+
+        dataDiv.add(refresh1);
+        tableDiv.add(refresh2);
+        pagingNavigator.add(refresh3);
+        progressBar.add(refresh4);
+        percCompleted.add(refresh5);
 
         BootstrapAjaxButton send = new BootstrapAjaxButton("send", Buttons.Type.Primary) {
 
             @Override
             public void onSubmit(AjaxRequestTarget target) {
+                //TODO
                 boolean visible = searchField.getValue().length() > 0;
-                tableDiv.setEnabled(visible);
-                pagingNavigator.setEnabled(visible);
+                logger.debug("visible" + visible);
+                dataDiv.setVisible(true);
+//                tableDiv.setVisible(visible);
+//                pagingNavigator.setVisible(visible);
+//                progressBar.setVisible(visible);
+//                percCompleted.setVisible(visible);
+                target.add(dataDiv);
                 target.add(tableDiv);
                 target.add(pagingNavigator);
-                //listview.setModel(Model.ofList(dataService.loadData(searchField.getValue())));
+                target.add(progressBar);
+                target.add(percCompleted);
+
+
                 data.clear();
+                progressBar.value(0);
+                percCompleted.setDefaultModel(Model.of(0));
                 clearCounter();
-                //data.addAll(dataService.loadData(searchField.getValue()));
             }
+
+
         };
         form.add(send);
         form.add(searchField);
+        add(dataDiv);
+        //dataDiv.setVisible(false);
 
     }
 
@@ -153,6 +212,7 @@ public class HomePage extends BasePage {
     private int increaseCounter() {
         return counter++;
     }
+
     private void clearCounter() {
         counter = 0;
     }

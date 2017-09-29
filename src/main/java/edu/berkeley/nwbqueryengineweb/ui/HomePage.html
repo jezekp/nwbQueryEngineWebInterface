@@ -34,35 +34,47 @@
                     <input id="sendButton" wicket:id="send" type="submit" value="Search"> </input>
                 </form>
             </div>
+            <div>
 
-            <table  wicket:id="tableDiv" class="table table-striped table-hover">
-                <thead>
-                <th>
-                    File
-                </th>
-                <th>
-                    Dataset
-                </th>
-                <th>
-                    Value
-                </th>
-                </thead>
-                <tr wicket:id="listview">
-                    <td><span class="smaller-font" wicket:id="fileName"></span></td>
-                    <td><span class="bigger-font" wicket:id="dataset"></span></td>
-                    <td><span class="smaller-font" wicket:id="value"></span></td>
-                    <td>
-                        <form>
-                            <input class="searchField" wicket:id="file" type="submit"
-                                   value="Download File"> </input>
-                        </form>
-                    </td>
-                </tr>
-
-            </table>
-            <div class="navigator">
-                <ul wicket:id="navigator"></ul>
             </div>
+            <wicket:enclosure child="dataDiv">
+                <div wicket:id="dataDiv">
+                    <p class="text-primary">Loading data [<span wicket:id="percCompleted"></span> % completed]
+                    </p>
+                    <div wicket:id="progressBar">
+
+                    </div>
+
+                    <table wicket:id="tableDiv" class="table table-striped table-hover">
+                        <thead>
+                        <th>
+                            File
+                        </th>
+                        <th>
+                            Dataset
+                        </th>
+                        <th>
+                            Value
+                        </th>
+                        </thead>
+                        <tr wicket:id="listview">
+                            <td><span class="smaller-font" wicket:id="fileName"></span></td>
+                            <td><span class="bigger-font" wicket:id="dataset"></span></td>
+                            <td><span class="smaller-font" wicket:id="value"></span></td>
+                            <td>
+                                <form>
+                                    <input class="searchField" wicket:id="file" type="submit"
+                                           value="Download File"> </input>
+                                </form>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <div class="navigator">
+                        <ul wicket:id="navigator"></ul>
+                    </div>
+                </div>
+            </wicket:enclosure>
             <div class="panel panel-default floating narrow">
                 <div class="panel-heading">Who We Are</div>
                 <div class="panel-body">
