@@ -72,16 +72,18 @@ public class HomePage extends BasePage {
         final WebMarkupContainer dataDiv = new WebMarkupContainer("dataDiv");
         dataDiv.setOutputMarkupPlaceholderTag(true);
 
-
+        final WebMarkupContainer progressDiv = new WebMarkupContainer("progressDiv");
+        progressDiv.setOutputMarkupPlaceholderTag(true);
+        dataDiv.add(progressDiv);
         final Label percCompleted = new Label("percCompleted", Model.of(0));
         percCompleted.setOutputMarkupPlaceholderTag(true);
-        dataDiv.add(percCompleted);
+        progressDiv.add(percCompleted);
 
         final ProgressBar progressBar = new ProgressBar("progressBar", Model.of(0));
         progressBar.setOutputMarkupPlaceholderTag(true);
         progressBar.striped(true);
         progressBar.active(true);
-        dataDiv.add(progressBar);
+        progressDiv.add(progressBar);
 
 
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
@@ -97,7 +99,11 @@ public class HomePage extends BasePage {
                     logger.debug("Progress bar:" + progressValue);
                     progressBar.value(progressValue);
                     percCompleted.setDefaultModel(Model.of(progressValue));
+                    if(progressBar.complete()) {
+                        progressDiv.setVisible(false);
+                    }
                 }
+
 
                 return data;
             }
@@ -156,6 +162,7 @@ public class HomePage extends BasePage {
                 boolean isQuery = !searchField.getValue().isEmpty();
                 logger.debug("visible" + isQuery);
                 dataDiv.setVisible(isQuery);
+                progressDiv.setVisible(true);
                 target.add(dataDiv);
                 data.clear();
                 progressBar.value(0);
