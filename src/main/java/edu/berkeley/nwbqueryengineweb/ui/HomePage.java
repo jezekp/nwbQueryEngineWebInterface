@@ -61,6 +61,7 @@ public class HomePage extends BasePage {
     public HomePage(final PageParameters parameters) {
         super(parameters);
 
+
         logger.debug("Home page created");
 
         final TextField<String> searchField = new TextField<String>("searchField", Model.of(""));
@@ -70,11 +71,9 @@ public class HomePage extends BasePage {
 
         final WebMarkupContainer dataDiv = new WebMarkupContainer("dataDiv");
         dataDiv.setOutputMarkupPlaceholderTag(true);
-        dataDiv.setOutputMarkupId(true);
 
 
         final Label percCompleted = new Label("percCompleted", Model.of(0));
-        //percCompleted.setOutputMarkupId(true);
         percCompleted.setOutputMarkupPlaceholderTag(true);
         dataDiv.add(percCompleted);
 
@@ -82,7 +81,6 @@ public class HomePage extends BasePage {
         progressBar.setOutputMarkupPlaceholderTag(true);
         progressBar.striped(true);
         progressBar.active(true);
-        //progressBar.setOutputMarkupId(true);
         dataDiv.add(progressBar);
 
 
@@ -91,17 +89,14 @@ public class HomePage extends BasePage {
             protected List<NwbData> load() {
                 logger.debug("I am called: " + data.size() + ", i: " + counter);
                 //read continuously all files with data - each calling of this method read one file
-                if (counter < files.length) {
+                boolean isQuery = !searchField.getValue().isEmpty();
+                if (counter < files.length && isQuery) {
                     data.addAll(dataService.loadData(searchField.getValue(), files[increaseCounter()]));
 
                     int progressValue = Math.round(counter / (float) files.length * 100);
                     logger.debug("Progress bar:" + progressValue);
                     progressBar.value(progressValue);
                     percCompleted.setDefaultModel(Model.of(progressValue));
-                }
-
-                if(counter == files.length && data.isEmpty()) {
-                    dataDiv.setVisible(false);
                 }
 
                 return data;
@@ -134,56 +129,34 @@ public class HomePage extends BasePage {
 
         add(form);
 
+        listview.setOutputMarkupPlaceholderTag(true);
         final WebMarkupContainer tableDiv = new WebMarkupContainer("tableDiv");
 
         tableDiv.setOutputMarkupPlaceholderTag(true);
-        //tableDiv.setOutputMarkupId(true);
         dataDiv.add(tableDiv);
 
         tableDiv.add(listview);
         final BootstrapPagingNavigator pagingNavigator = new BootstrapPagingNavigator("navigator", listview);
         pagingNavigator.setOutputMarkupPlaceholderTag(true);
-        dataDiv.add(pagingNavigator.setOutputMarkupId(true));
+        dataDiv.add(pagingNavigator);
 
         add(new Label("countOfFiles", files.length + " " + searchField.getValue()));
 
-//        dataDiv.setVisible(false);
-//        tableDiv.setVisible(false);
-//        pagingNavigator.setVisible(false);
-//        progressBar.setVisible(false);
-//        percCompleted.setVisible(false);
+        dataDiv.setVisible(false);
 
         final Behavior refresh1 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
-        final Behavior refresh2 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
-        final Behavior refresh3 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
-        final Behavior refresh4 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
-        final Behavior refresh5 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
+
 
         dataDiv.add(refresh1);
-        tableDiv.add(refresh2);
-        pagingNavigator.add(refresh3);
-        progressBar.add(refresh4);
-        percCompleted.add(refresh5);
 
         BootstrapAjaxButton send = new BootstrapAjaxButton("send", Buttons.Type.Primary) {
 
             @Override
             public void onSubmit(AjaxRequestTarget target) {
-                //TODO
-                boolean visible = searchField.getValue().length() > 0;
-                logger.debug("visible" + visible);
-                dataDiv.setVisible(true);
-//                tableDiv.setVisible(visible);
-//                pagingNavigator.setVisible(visible);
-//                progressBar.setVisible(visible);
-//                percCompleted.setVisible(visible);
+                boolean isQuery = !searchField.getValue().isEmpty();
+                logger.debug("visible" + isQuery);
+                dataDiv.setVisible(isQuery);
                 target.add(dataDiv);
-                target.add(tableDiv);
-                target.add(pagingNavigator);
-                target.add(progressBar);
-                target.add(percCompleted);
-
-
                 data.clear();
                 progressBar.value(0);
                 percCompleted.setDefaultModel(Model.of(0));
@@ -195,7 +168,6 @@ public class HomePage extends BasePage {
         form.add(send);
         form.add(searchField);
         add(dataDiv);
-        //dataDiv.setVisible(false);
 
     }
 
