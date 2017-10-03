@@ -82,6 +82,7 @@ public class NwbDao implements GenericDao<NwbData> {
 
     @Override
     public String getRootDir() {
+        logger.debug("fileFolder: " + fileFolder);
         return fileFolder;
     }
 

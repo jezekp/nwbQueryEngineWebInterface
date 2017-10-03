@@ -59,7 +59,7 @@ public class FileUploadPage extends BasePage {
         add(form);
         final NotificationPanel fp = new NotificationPanel("feedback");
         fp.setOutputMarkupId(true);
-        fp.hideAfter(Duration.seconds(10));
+        fp.hideAfter(Duration.seconds(20));
         add(fp);
 
         BootstrapFileInput bootstrapFileInput = new BootstrapFileInput("bootstrapFileinput", model) {

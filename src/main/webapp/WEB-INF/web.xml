@@ -26,4 +26,9 @@
         </listener-class>
     </listener>
 
+    <context-param>
+        <param-name>configuration</param-name>
+        <param-value>deployment</param-value>
+    </context-param>
+
 </web-app>

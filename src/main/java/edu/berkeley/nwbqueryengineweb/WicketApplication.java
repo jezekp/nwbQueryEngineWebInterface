@@ -40,6 +40,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
  */
 public class WicketApplication extends WebApplication {
 
+
     /**
      * @return HomePage.class
      * @see org.apache.wicket.Application#getHomePage()
@@ -55,6 +56,7 @@ public class WicketApplication extends WebApplication {
     @Override
     public void init() {
         super.init();
+        //In a tomcat installation set java.library.path and configure jdk in /etc/default/tomcat8
         System.loadLibrary("HDFql");
         configureBootstrap();
         addResourceReplacement(JQueryResourceReference.getV1(),
