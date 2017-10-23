@@ -26,35 +26,35 @@ Configuration
   
 
 Build
---
+==
 
 run mvn clean package
 
 Deploy
---
+==
 
 Tomcat
-==
+--
 * copy src/main/resources/libHDFql.so to a directory accessible by tomcat
 * configure JAVA_OPTS=-Djava.library.path=path to a directory with libHDFQL.so
 * copy target/nwb-query-engine-web.war to the tomcat webapps directory
 * start tomcat
 
 Or Docker
-==
+--
 
 * docker build -t nwb-query-engine-web -f Docker/Dockerfile .
 * docker run -p 8080:8080 nwb-query-engine-web
 
 
 Use
---
+==
 * access localhost:8080/nwb-query-engine-web
 
 
 
 Frequent problems
---
+==
 
 * JAVA_OPTS is not set correctly
 * files.folder in project.properties is not set or is pointing to a non-existing directory or to a directory with insufficient permissions
