@@ -15,6 +15,14 @@ Running Prerequisites
 * [Installed JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [Installed Apache Tomcat 8](https://tomcat.apache.org/download-80.cgi)
 * [Installed Maven](https://maven.apache.org/download.cgi)
+
+* or [Docker](https://www.docker.com/) instead
+
+
+Configuration
+--
+
+* configure WEB-INF/project.properties
   
 
 Build
@@ -22,19 +30,27 @@ Build
 
 run mvn clean package
 
-Configuration
+Deploy
 --
 
+Tomcat
+==
 * copy src/main/resources/libHDFql.so to a directory accessible by tomcat
 * configure JAVA_OPTS=-Djava.library.path=path to a directory with libHDFQL.so
-* configure WEB-INF/project.properties
-
-Run
---
-
 * copy target/nwb-query-engine-web.war to the tomcat webapps directory
 * start tomcat
+
+Or Docker
+==
+
+* docker build -t nwb-query-engine-web -f Docker/Dockerfile .
+* docker run -p 8080:8080 nwb-query-engine-web
+
+
+Use
+--
 * access localhost:8080/nwb-query-engine-web
+
 
 
 Frequent problems
