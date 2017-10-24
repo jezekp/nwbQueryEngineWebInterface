@@ -4,6 +4,8 @@ import edu.berkeley.nwbqueryengine.api.FileInput;
 import edu.berkeley.nwbqueryengine.data.NwbResult;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.data.utils.NwbFileFilter;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -77,7 +80,12 @@ public class NwbDao implements GenericDao<NwbData> {
 
     @Override
     public File[] getFiles() {
-        return new File(getRootDir()).listFiles(new NwbFileFilter());
+        List<File> res = new LinkedList<>();
+        Iterator<File> files = FileUtils.iterateFiles(new File(getRootDir()), new NwbFileFilter(), TrueFileFilter.INSTANCE);
+        while (files.hasNext()) {
+            res.add(files.next());
+        }
+        return res.toArray(new File[]{});
     }
 
     @Override

@@ -25,6 +25,7 @@
         <wicket.bootsrap.version>2.0.0-M6</wicket.bootsrap.version>
         <jetty.version>7.6.13.v20130916</jetty.version>
         <spring.version>4.3.11.RELEASE</spring.version>
+        <commons-io.version>2.6</commons-io.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
@@ -89,6 +90,13 @@
             <artifactId>wicket-bootstrap-less</artifactId>
             <version>${wicket.bootsrap.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+
 
 
 

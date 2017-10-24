@@ -1,5 +1,7 @@
 package edu.berkeley.nwbqueryengineweb.data.utils;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -27,10 +29,19 @@ import java.io.FileFilter;
  * NwbFileFilter, 2017/09/29 10:00 petr-jezek
  *
  **********************************************************************************************************************/
-public class NwbFileFilter implements FileFilter {
+public class NwbFileFilter implements IOFileFilter {
 
     @Override
     public boolean accept(File pathname) {
-        return pathname.getName().toLowerCase().endsWith(".nwb");
+        return endWithNwb(pathname.getName());
+    }
+
+    @Override
+    public boolean accept(File file, String s) {
+        return endWithNwb(s);
+    }
+
+    private boolean endWithNwb(String s) {
+        return s.toLowerCase().endsWith(".nwb");
     }
 }
