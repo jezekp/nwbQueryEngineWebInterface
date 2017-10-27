@@ -44,7 +44,7 @@ Or Docker
 --
 
 * docker build -t nwb-query-engine-web -f Docker/Dockerfile .
-* docker run -p 8080:8080 nwb-query-engine-web
+* docker run -p 8080:8080 -v <host data directory path>:/Data nwb-query-engine-web
 
 
 Use
