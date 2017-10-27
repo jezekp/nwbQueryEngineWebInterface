@@ -58,4 +58,5 @@ Frequent problems
 
 * JAVA_OPTS is not set correctly
 * files.folder in project.properties is not set or is pointing to a non-existing directory or to a directory with insufficient permissions
+* parameter -v (Docker) is not set correctly
 
