@@ -6,7 +6,7 @@ Introduction
 
 [NQB Query Engine](https://github.com/jezekp/NwbQueryEngine) is a tool for searching in data stored in [Neurodata Without Borders](http://www.nwb.org/) data format.
 
-A [demo](http://eeg.kiv.zcu.cz:8080/nwb-query-engine-web/) can be found here.
+A [demo](http://eeg.kiv.zcu.cz:8080/nwb-query-engine-web/) is available.
  
 Getting started
 ==
