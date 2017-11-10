@@ -4,7 +4,9 @@ Web Interface to NWB Query Engine
 Introduction
 --
 
-[NQB Query Engine](https://github.com/jezekp/NwbQueryEngine) is a tool for searching in data stored in [Neurodata Without Borders](http://www.nwb.org/) data format.
+[NWB Query Engine](https://github.com/jezekp/NwbQueryEngine) is a tool for searching in data stored in [Neurodata Without Borders](http://www.nwb.org/) data format.
+
+A [demo](http://eeg.kiv.zcu.cz:8080/nwb-query-engine-web/) is available.
  
 Getting started
 ==
@@ -44,7 +46,7 @@ Or Docker
 --
 
 * docker build -t nwb-query-engine-web -f Docker/Dockerfile .
-* docker run -p 8080:8080 nwb-query-engine-web
+* docker run -p 8080:8080 -v &lt;host data directory path&gt;:/Data nwb-query-engine-web
 
 
 Use
@@ -58,4 +60,5 @@ Frequent problems
 
 * JAVA_OPTS is not set correctly
 * files.folder in project.properties is not set or is pointing to a non-existing directory or to a directory with insufficient permissions
+* parameter -v (Docker) is not set correctly
 
