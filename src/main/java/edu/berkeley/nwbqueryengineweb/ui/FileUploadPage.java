@@ -97,9 +97,11 @@ public class FileUploadPage extends BasePage {
 
                                 success(new NotificationMessage(Model.of("Saved"), Model.of(upload.getClientFileName())));
                             } catch (Exception e) {
-                                upload.delete();
                                 error(new NotificationMessage(Model.of(upload.getClientFileName()), Model.of(e.getLocalizedMessage())));
+                            } finally {
+                                upload.delete();
                             }
+
                         }
                     }
                 }
