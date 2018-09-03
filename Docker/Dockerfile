@@ -8,7 +8,7 @@ WORKDIR /app/nwbQueryEngineWebInterface
 COPY --from=clone /app/nwbQueryEngineWebInterface /app
 RUN mvn package
 
-FROM 		tomcat:8.0.21-jre8
+FROM 		tomcat
 RUN mkdir /Data
 COPY --from=build /app/nwbQueryEngineWebInterface/target/nwb-query-engine-web.war /usr/local/tomcat/webapps/
 COPY --from=build /app/nwbQueryEngineWebInterface/src/main/resources/libHDFql.so /
