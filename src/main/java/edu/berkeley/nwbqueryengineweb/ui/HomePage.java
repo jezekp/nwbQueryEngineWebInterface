@@ -90,7 +90,7 @@ public class HomePage extends BasePage {
 
             protected List<NwbData> load() {
                 logger.debug("I am called: " + data.size() + ", i: " + counter);
-                //read continuously all files with data - each calling of this method read one file
+                //read continuously all files with data - each calling of this method reads one file
                 boolean isQuery = !searchField.getValue().isEmpty();
                 if (counter < files.length && isQuery) {
                     data.addAll(dataService.loadData(searchField.getValue(), files[increaseCounter()]));
