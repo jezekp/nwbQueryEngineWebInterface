@@ -41,7 +41,6 @@ public class NwbService implements GenericService<NwbData> {
 
     @Override
     public List<NwbData> loadData(String query, File file) {
-        System.out.println("Loading data");
         List<NwbData> res;
         res = nwbDao.getData(query, file);
         return res;
