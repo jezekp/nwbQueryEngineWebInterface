@@ -109,32 +109,32 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td>analysis=(description LIKE whisker)</td>
+                            <td>analysis="description LIKE whisker"</td>
                             <td>selects all datasets description from an analysis group which contains a whisker
                                 string
                             </td>
 
                         </tr>
                         <tr>
-                            <td> processing=(electrode_idx&gt;30)</td>
+                            <td> processing="electrode_idx&gt;30"</td>
                             <td> selects all electrode_idx datasets from a processing group which value &gt; 30</td>
                         </tr>
                         <tr>
-                            <td> epochs=(start_time&gt;200 &amp; stop_time&lt;400 &#124; stop_time&gt;1600)</td>
+                            <td> epochs="start_time&gt;200 &amp; stop_time&lt;400 &#124; stop_time&gt;1600"</td>
                             <td> selects all epochs which start_time &gt; 200 and stop_time &lt; 400 or stop_time &gt;
                                 1600
                             </td>
                         </tr>
                         <tr>
-                            <td> epochs=(start_time)</td>
+                            <td> epochs="start_time"</td>
                             <td> selects all epochs with a start_time dataset</td>
                         </tr>
                         <tr>
-                            <td> data=(unit LIKE unkno)</td>
+                            <td> data="unit LIKE unkno"</td>
                             <td> selects all datasets data with attributes containing a substring unkno</td>
                         </tr>
                         <tr>
-                            <td>pole_in/data=(unit LIKE unkno)</td>
+                            <td>pole_in/data="unit LIKE unkno"</td>
                             <td> takes into account only data within a pole_in group</td>
                         </tr>
                         </tbody>
