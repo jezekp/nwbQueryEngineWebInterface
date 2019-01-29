@@ -28,9 +28,9 @@ import java.util.List;
  * GenericDao, 2017/09/18 16:29 petr-jezek
  *
  **********************************************************************************************************************/
-public interface GenericDao<T> {
+public interface GenericDao<T, Z> {
 
-    List<T> getData(String query, File file);
+    List<T> getData(String query, Z file);
     File[] getFiles();
     String getRootDir();
 }

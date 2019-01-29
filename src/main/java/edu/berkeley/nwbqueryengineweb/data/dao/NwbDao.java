@@ -1,6 +1,7 @@
 package edu.berkeley.nwbqueryengineweb.data.dao;
 
 import edu.berkeley.nwbqueryengine.api.FileInput;
+import edu.berkeley.nwbqueryengine.api.Input;
 import edu.berkeley.nwbqueryengine.data.NwbResult;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.data.utils.NwbFileFilter;
@@ -43,10 +44,10 @@ import java.util.List;
  *
  **********************************************************************************************************************/
 @Repository
-public class NwbDao implements GenericDao<NwbData> {
+public class NwbDao implements GenericDao<NwbData, File> {
 
     @Autowired
-    private FileInput nwbQueryEngine;
+    private Input nwbQueryEngine;
     @Value("${files.folder}")
     private String fileFolder;
 

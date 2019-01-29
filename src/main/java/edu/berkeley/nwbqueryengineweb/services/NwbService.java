@@ -37,7 +37,7 @@ public class NwbService implements GenericService<NwbData> {
 
 
     @Autowired
-    GenericDao<NwbData> nwbDao;
+    GenericDao<NwbData, File> nwbDao;
 
     @Override
     public List<NwbData> loadData(String query, File file) {
