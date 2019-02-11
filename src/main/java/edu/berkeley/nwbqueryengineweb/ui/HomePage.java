@@ -87,7 +87,7 @@ public class HomePage extends BasePage {
 
 
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
-
+            int x = 0;
             protected List<NwbData> load() {
                 logger.debug("I am called: " + data.size() + ", i: " + counter);
                 //read continuously all files with data - each calling of this method reads one file
@@ -103,7 +103,6 @@ public class HomePage extends BasePage {
                         progressDiv.setVisible(false);
                     }
                 }
-
 
                 return data;
             }
@@ -150,7 +149,7 @@ public class HomePage extends BasePage {
 
         dataDiv.setVisible(false);
 
-        final Behavior refresh1 = new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10));
+        final Behavior refresh1 = new AjaxSelfUpdatingTimerBehavior(Duration.milliseconds(1));
 
 
         dataDiv.add(refresh1);
