@@ -18,7 +18,6 @@ package edu.berkeley.nwbqueryengineweb.ui;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationMessage;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
-import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Alert;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.fileinput.BootstrapFileInput;
 
@@ -28,7 +27,6 @@ import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.services.GenericService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.ListModel;
@@ -45,7 +43,7 @@ public class FileUploadPage extends BasePage {
 
 
     @SpringBean
-    GenericService<NwbData> dataService;
+    GenericService<NwbData> nwbService;
 
     public FileUploadPage(final PageParameters params) {
         super(params);
@@ -80,7 +78,7 @@ public class FileUploadPage extends BasePage {
                         if (upload != null) {
 
                             // write to a new file
-                            File newFile = new File(dataService.getRootDir()
+                            File newFile = new File(nwbService.getRootDir()
                                    + "/" + upload.getClientFileName());
                             try {
 

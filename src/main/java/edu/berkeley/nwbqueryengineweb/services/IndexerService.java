@@ -2,6 +2,7 @@ package edu.berkeley.nwbqueryengineweb.services;
 
 import edu.berkeley.nwbqueryengineweb.data.dao.GenericDao;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -34,6 +35,7 @@ import java.util.List;
 @Service
 public class IndexerService implements GenericService<NwbData> {
 
+    @Autowired
     GenericDao<NwbData, File> indexerDao;
 
     @Override
@@ -43,11 +45,11 @@ public class IndexerService implements GenericService<NwbData> {
 
     @Override
     public File[] getFiles() {
-        return new File[1];
+        return indexerDao.getFiles();
     }
 
     @Override
     public String getRootDir() {
-        return null;
+        return indexerDao.getRootDir();
     }
 }

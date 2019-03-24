@@ -21,6 +21,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.components.progress.ProgressBar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
+import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapRadioChoice;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.services.GenericService;
@@ -37,6 +38,7 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -45,6 +47,7 @@ import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.time.Duration;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,13 +55,21 @@ import java.util.List;
 public class HomePage extends BasePage {
     private static final long serialVersionUID = 1L;
 
+    private final static String QUERY_ENGINE = "NWB Query Engine";
+    private final static String INDEXER = "NWB Indexer";
+
+    private static final List<String> CHOICES = Arrays
+            .asList(new String[] { QUERY_ENGINE, INDEXER });
+
+    private String selected = QUERY_ENGINE;
+
     Log logger = LogFactory.getLog(getClass());
     private int counter;
 
-    @SpringBean
+    @SpringBean(name = "nwbService")
     GenericService<NwbData> nwbService;
 
-    @SpringBean
+    @SpringBean(name = "indexerService")
     GenericService<NwbData> indexerService;
 
 
@@ -71,7 +82,6 @@ public class HomePage extends BasePage {
         final TextField<String> searchField = new TextField<String>("searchField", Model.of(""));
 
         final List<NwbData> data = new LinkedList<NwbData>();
-        final File[] files = getFiles();
 
         final WebMarkupContainer dataDiv = new WebMarkupContainer("dataDiv");
         dataDiv.setOutputMarkupPlaceholderTag(true);
@@ -96,8 +106,9 @@ public class HomePage extends BasePage {
                 //logger.debug("I am called: " + data.size() + ", i: " + counter);
                 //read continuously all files with data - each calling of this method reads one file
                 boolean isQuery = !searchField.getValue().isEmpty();
+                File[] files = getFiles();
                 if (counter < files.length && isQuery) {
-                    data.addAll(nwbService.loadData(searchField.getValue(), files[increaseCounter()]));
+                    data.addAll(getService().loadData(searchField.getValue(), files[increaseCounter()]));
 
                     int progressValue = Math.round(counter / (float) files.length * 100);
                     logger.debug("Progress bar:" + progressValue);
@@ -149,7 +160,7 @@ public class HomePage extends BasePage {
         pagingNavigator.setOutputMarkupPlaceholderTag(true);
         dataDiv.add(pagingNavigator);
 
-        add(new Label("countOfFiles", files.length + " " + searchField.getValue()));
+        add(new Label("countOfFiles", getFiles().length + " " + searchField.getValue()));
 
         dataDiv.setVisible(false);
 
@@ -173,19 +184,19 @@ public class HomePage extends BasePage {
                 clearCounter();
             }
 
-
         };
 
-
+        BootstrapRadioChoice<String> radioChoice = new BootstrapRadioChoice("engine", new PropertyModel<String>(this, "selected"), CHOICES);
 
         form.add(send);
         form.add(searchField);
+        form.add(radioChoice);
         add(dataDiv);
 
     }
 
     private File[] getFiles() {
-        java.io.File[] files = nwbService.getFiles();
+        java.io.File[] files = getService().getFiles();
         File[] res = new File[files.length];
 
         for (int i = 0; i < files.length; i++) {
@@ -200,6 +211,17 @@ public class HomePage extends BasePage {
 
     private void clearCounter() {
         counter = 0;
+    }
+
+    private GenericService getService() {
+        if (selected.equals(QUERY_ENGINE)) {
+            logger.debug("QueryEngine");
+            return nwbService;
+        } else {
+            logger.debug("Indexer");
+            return indexerService;
+        }
+
     }
 
 }
