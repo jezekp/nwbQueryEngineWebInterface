@@ -56,7 +56,11 @@ public class HomePage extends BasePage {
     private int counter;
 
     @SpringBean
-    GenericService<NwbData> dataService;
+    GenericService<NwbData> nwbService;
+
+    @SpringBean
+    GenericService<NwbData> indexerService;
+
 
     public HomePage(final PageParameters parameters) {
         super(parameters);
@@ -89,11 +93,11 @@ public class HomePage extends BasePage {
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
             int x = 0;
             protected List<NwbData> load() {
-                logger.debug("I am called: " + data.size() + ", i: " + counter);
+                //logger.debug("I am called: " + data.size() + ", i: " + counter);
                 //read continuously all files with data - each calling of this method reads one file
                 boolean isQuery = !searchField.getValue().isEmpty();
                 if (counter < files.length && isQuery) {
-                    data.addAll(dataService.loadData(searchField.getValue(), files[increaseCounter()]));
+                    data.addAll(nwbService.loadData(searchField.getValue(), files[increaseCounter()]));
 
                     int progressValue = Math.round(counter / (float) files.length * 100);
                     logger.debug("Progress bar:" + progressValue);
@@ -171,6 +175,9 @@ public class HomePage extends BasePage {
 
 
         };
+
+
+
         form.add(send);
         form.add(searchField);
         add(dataDiv);
@@ -178,7 +185,7 @@ public class HomePage extends BasePage {
     }
 
     private File[] getFiles() {
-        java.io.File[] files = dataService.getFiles();
+        java.io.File[] files = nwbService.getFiles();
         File[] res = new File[files.length];
 
         for (int i = 0; i < files.length; i++) {
