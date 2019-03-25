@@ -73,6 +73,10 @@ body {
     margin-right: 5px;
 }
 
+.left {
+    text-align: left;
+}
+
 body {
     margin-top: 0;
     padding-top: 0;

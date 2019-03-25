@@ -30,9 +30,17 @@
         <div id="bd">
             <div class="form-horizontal">
                 <form id="searchForm" wicket:id="form">
-                    <input id="searchField" class="form-control" wicket:id="searchField" type="text"/>
-                    <span id="engine" class="form-check-input" wicket:id="engine" type="radio"/>
-                    <input id="sendButton" wicket:id="send" type="submit" value="Search"> </input>
+                    <div class="form-group row">
+
+                        <input id="searchField" class="form-control col-sm-8" wicket:id="searchField"
+                                                     type="text"/>
+                        <input id="sendButton" wicket:id="send" type="submit" class="col-sm-4"
+                                                     value="Search"> </input>
+                    </div>
+                    <div class="form-group row left">
+                        <span id="engine" class="form-check-input col-sm-4" wicket:id="engine"
+                                                    type="radio"/>
+                    </div>
                 </form>
             </div>
             <div>
@@ -41,11 +49,11 @@
 
             <div wicket:id="dataDiv">
                 <div wicket:id="progressDiv">
-                <p class="text-primary">Loading data [<span wicket:id="percCompleted"></span> % completed]
-                </p>
-                <div wicket:id="progressBar">
+                    <p class="text-primary">Loading data [<span wicket:id="percCompleted"></span> % completed]
+                    </p>
+                    <div wicket:id="progressBar">
 
-                </div>
+                    </div>
                 </div>
                 <table wicket:id="tableDiv" class="table table-striped table-hover">
                     <thead>
