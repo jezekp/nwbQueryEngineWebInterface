@@ -51,6 +51,9 @@ public class IndexerDao implements GenericDao<NwbData, File> {
     @Value("${index.db}")
     private String indexDb;
 
+    @Value("${files.folder}")
+    private String fileFolder;
+
     @Override
     public List<NwbData> getData(String query, File file) {
         List<NwbData> data = new LinkedList<>();
@@ -97,6 +100,6 @@ public class IndexerDao implements GenericDao<NwbData, File> {
 
     @Override
     public String getRootDir() {
-        return null;
+        return fileFolder;
     }
 }
