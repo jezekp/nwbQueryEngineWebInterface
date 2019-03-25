@@ -2,8 +2,10 @@ package edu.berkeley.nwbqueryengineweb.data.dao;
 
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -40,37 +42,42 @@ public class IndexerDao implements GenericDao<NwbData, File> {
 
     Log logger = LogFactory.getLog(getClass());
 
+    @Value("${python.location}")
+    private String python;
+
+    @Value("${indexer.script}")
+    private String indexerScript;
+
+    @Value("${index.db}")
+    private String indexDb;
+
     @Override
     public List<NwbData> getData(String query, File file) {
         List<NwbData> data = new LinkedList<>();
 
         try {
-            Process p = Runtime.getRuntime().exec(new String[]{"/usr/bin/python3", "/home/petr-jezek/python/nwbindexer/run_query2.py", "/home/petr-jezek/python/nwbindexer/nwb_index.db", query});
+            Process p = Runtime.getRuntime().exec(new String[]{python, indexerScript, indexDb, query});
       //      p.waitFor();
-            InputStream error = p.getErrorStream();
 
-            int i;
-            char c;
-/*
-            while((i = error.read())!=-1) {
+//            InputStream error = p.getErrorStream();
+//            List<String> errorLines = IOUtils.readLines(error, Charset.defaultCharset());
+//
+//            errorLines.forEach(i -> logger.error(i));
 
-                // converts integer to character
-                c = (char)i;
-
-                // prints character
-                System.out.print(c);
-            }
-*/
             InputStream result =  p.getInputStream();
             List<String> lines = IOUtils.readLines(result, Charset.defaultCharset());
             for(String line : lines) {
-                String[] splited = line.split(",");
-                if(splited.length  > 3) {
-                    NwbData nwbData = new NwbData();
-                    nwbData.setFile(new File(splited[0]));
-                    nwbData.setDataSet(splited[2]);
-                    nwbData.setValue(splited[3]);
-                    data.add(nwbData);
+                if(line.startsWith("(") && line.endsWith(")")) {
+                    String[] split = StringUtils.strip(line, "(|)").split(",");
+                    split = StringUtils.stripAll(split, " ");
+                    split = StringUtils.stripAll(split, "'");
+                    if (split.length > 3) {
+                        NwbData nwbData = new NwbData();
+                        nwbData.setFile(new File(split[0]));
+                        nwbData.setDataSet(split[2]);
+                        nwbData.setValue(split[3]);
+                        data.add(nwbData);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -85,7 +92,7 @@ public class IndexerDao implements GenericDao<NwbData, File> {
 
     @Override
     public File[] getFiles() {
-        return new File[] {new File("/home/petr-jezek/python/nwbindexer/nwb_index.db")};
+        return new File[] {new File(indexDb)};
     }
 
     @Override
