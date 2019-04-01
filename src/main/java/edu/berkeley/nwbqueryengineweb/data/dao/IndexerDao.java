@@ -85,6 +85,7 @@ public class IndexerDao implements GenericDao<NwbData, File> {
             }
         } catch (Exception e) {
             logger.error(e);
+            throw new RuntimeException(e);
         }
 
 
