@@ -73,7 +73,6 @@ public class HomePage extends BasePage {
     GenericService<NwbData> indexerService;
 
 
-
     public HomePage(final PageParameters parameters) {
         super(parameters);
 
@@ -100,10 +99,9 @@ public class HomePage extends BasePage {
         progressBar.active(true);
         progressDiv.add(progressBar);
 
-
-        final File[] files = getFiles();
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
-            int x = 0;
+
+            final File[] files = getFiles();
 
             protected List<NwbData> load() {
                 //logger.debug("I am called: " + data.size() + ", i: " + counter);
