@@ -88,8 +88,6 @@ public class IndexerDao implements GenericDao<NwbData, File> {
             throw new RuntimeException(e);
         }
 
-
-
         return data;
 
     }

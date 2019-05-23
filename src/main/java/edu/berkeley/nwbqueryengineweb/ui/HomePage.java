@@ -59,7 +59,7 @@ public class HomePage extends BasePage {
     private final static String INDEXER = "NWB Indexer";
 
     private static final List<String> CHOICES = Arrays
-            .asList(new String[] { QUERY_ENGINE, INDEXER });
+            .asList(new String[]{QUERY_ENGINE, INDEXER});
 
     private String selected = QUERY_ENGINE;
 
@@ -71,6 +71,8 @@ public class HomePage extends BasePage {
 
     @SpringBean(name = "indexerService")
     GenericService<NwbData> indexerService;
+
+    private final File[] files = getFiles();
 
 
     public HomePage(final PageParameters parameters) {
@@ -102,11 +104,12 @@ public class HomePage extends BasePage {
 
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
             int x = 0;
+
             protected List<NwbData> load() {
                 //logger.debug("I am called: " + data.size() + ", i: " + counter);
                 //read continuously all files with data - each calling of this method reads one file
                 boolean isQuery = !searchField.getValue().isEmpty();
-                File[] files = getFiles();
+
                 if (counter < files.length && isQuery) {
                     data.addAll(getService().loadData(searchField.getValue(), files[increaseCounter()]));
 
@@ -114,7 +117,7 @@ public class HomePage extends BasePage {
                     logger.debug("Progress bar:" + progressValue);
                     progressBar.value(progressValue);
                     percCompleted.setDefaultModel(Model.of(progressValue));
-                    if(progressBar.complete()) {
+                    if (progressBar.complete()) {
                         progressDiv.setVisible(false);
                     }
                 }
