@@ -62,10 +62,10 @@ public class IndexerDao implements GenericDao<NwbData, File> {
             Process p = Runtime.getRuntime().exec(new String[]{python, indexerScript, indexDb, query});
       //      p.waitFor();
 
-//            InputStream error = p.getErrorStream();
-//            List<String> errorLines = IOUtils.readLines(error, Charset.defaultCharset());
-//
-//            errorLines.forEach(i -> logger.error(i));
+            InputStream error = p.getErrorStream();
+            List<String> errorLines = IOUtils.readLines(error, Charset.defaultCharset());
+
+            errorLines.forEach(i -> logger.error(i));
 
             InputStream result =  p.getInputStream();
             List<String> lines = IOUtils.readLines(result, Charset.defaultCharset());
@@ -77,8 +77,12 @@ public class IndexerDao implements GenericDao<NwbData, File> {
                     if (split.length > 3) {
                         NwbData nwbData = new NwbData();
                         nwbData.setFile(new File(split[0]));
-                        nwbData.setDataSet(split[2]);
-                        nwbData.setValue(split[3]);
+                        nwbData.setDataSet(split[1]);
+                        String v = "";
+                        for(int i = 1; i < split.length; i++) {
+                            v += split[i] + " ";
+                        }
+                        nwbData.setValue(v);
                         data.add(nwbData);
                     }
                 }
