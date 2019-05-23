@@ -72,7 +72,6 @@ public class HomePage extends BasePage {
     @SpringBean(name = "indexerService")
     GenericService<NwbData> indexerService;
 
-    private final File[] files = getFiles();
 
 
     public HomePage(final PageParameters parameters) {
@@ -102,6 +101,7 @@ public class HomePage extends BasePage {
         progressDiv.add(progressBar);
 
 
+        final File[] files = getFiles();
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
             int x = 0;
 
