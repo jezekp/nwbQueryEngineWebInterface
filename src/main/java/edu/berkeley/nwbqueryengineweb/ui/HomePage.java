@@ -100,14 +100,15 @@ public class HomePage extends BasePage {
         progressDiv.add(progressBar);
 
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
-
-            final File[] files = getFiles();
-
+            File[] files = null;
             protected List<NwbData> load() {
                 //logger.debug("I am called: " + data.size() + ", i: " + counter);
                 //read continuously all files with data - each calling of this method reads one file
                 boolean isQuery = !searchField.getValue().isEmpty();
 
+                if(counter == 0) {
+                    files = getFiles();
+                }
                 if (counter < files.length && isQuery) {
                     data.addAll(getService().loadData(searchField.getValue(), files[increaseCounter()]));
 

@@ -56,6 +56,7 @@ public class IndexerDao implements GenericDao<NwbData, File> {
 
     @Override
     public List<NwbData> getData(String query, File file) {
+        logger.debug("I'm called: " + file);
         List<NwbData> data = new LinkedList<>();
 
         try {
