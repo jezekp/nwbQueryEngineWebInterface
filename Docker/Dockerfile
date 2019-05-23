@@ -9,6 +9,8 @@ WORKDIR /app/nwbQueryEngineWebInterface
 COPY --from=clone /app/nwbQueryEngineWebInterface /app
 RUN mvn package
 
+#TODO - configure project.properties for docker from docker file
+#TODO - add -v option for nwb indexer
 FROM 		tomcat
 RUN mkdir /Data
 COPY --from=build /app/nwbQueryEngineWebInterface/target/nwb-query-engine-web.war /usr/local/tomcat/webapps/
