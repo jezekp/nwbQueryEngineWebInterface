@@ -3,13 +3,12 @@ import os
 import sqlite3
 import re
 import readline
-import parse
+import parse2
+import make_sql
 readline.parse_and_bind('tab: complete')
 
 
-
-
-default_dbname="nwb_index.db"
+default_dbname="nwb_idx2.db"
 dbname=default_dbname
 con = None     # database connection
 cur = None       # cursor
@@ -36,8 +35,8 @@ def run_query(sql):
 
 def get_and_run_queries():
 	query = sys.argv[2]
-	ti = parse.parse(query)
-	sql = parse.make_sql(ti)
+	qi = parse2.parse(query)
+	sql = make_sql.make_sql(qi)
 	run_query(sql)
 
 def main():
@@ -55,4 +54,4 @@ def main():
 	con.close()
 
 if __name__ == "__main__":
-    main()
+	main()
