@@ -40,7 +40,7 @@ public class NwbService implements GenericService<NwbData> {
     GenericDao<NwbData, File> nwbDao;
 
     @Override
-    public List<NwbData> loadData(String query, File file) {
+    public List<NwbData> loadData(String query, File file) throws Exception {
         List<NwbData> res;
         res = nwbDao.getData(query, file);
         return res;

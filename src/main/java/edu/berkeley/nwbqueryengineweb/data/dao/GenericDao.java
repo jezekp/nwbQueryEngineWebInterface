@@ -30,7 +30,7 @@ import java.util.List;
  **********************************************************************************************************************/
 public interface GenericDao<T, Z> {
 
-    List<T> getData(String query, Z file);
+    List<T> getData(String query, Z file) throws Exception;
     File[] getFiles();
     String getRootDir();
 }

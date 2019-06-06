@@ -1,6 +1,8 @@
 package edu.berkeley.nwbqueryengineweb.data.dao;
 
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
+import edu.berkeley.nwbqueryengineweb.data.utils.JsonParser;
+import edu.berkeley.nwbqueryengineweb.data.utils.PythonProcess;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -55,43 +57,34 @@ public class IndexerDao implements GenericDao<NwbData, File> {
     private String fileFolder;
 
     @Override
-    public List<NwbData> getData(String query, File file) {
+    public List<NwbData> getData(String query, File file) throws Exception {
         logger.debug("I'm called: " + file);
         List<NwbData> data = new LinkedList<>();
 
-        try {
-            Process p = Runtime.getRuntime().exec(new String[]{python, indexerScript, indexDb, query});
-      //      p.waitFor();
 
-            InputStream error = p.getErrorStream();
-            List<String> errorLines = IOUtils.readLines(error, Charset.defaultCharset());
+            String[] params = new String[]{python, indexerScript, indexDb};
 
-            errorLines.forEach(i -> logger.error(i));
+            PythonProcess pythonProcess = new PythonProcess(params, query);
 
-            InputStream result =  p.getInputStream();
-            List<String> lines = IOUtils.readLines(result, Charset.defaultCharset());
-            for(String line : lines) {
-                if(line.startsWith("(") && line.endsWith(")")) {
-                    String[] split = StringUtils.strip(line, "(|)").split(",");
-                    split = StringUtils.stripAll(split, " ");
-                    split = StringUtils.stripAll(split, "'");
-                    if (split.length > 3) {
-                        NwbData nwbData = new NwbData();
-                        nwbData.setFile(new File(split[0]));
-                        nwbData.setDataSet(split[1]);
-                        String v = "";
-                        for(int i = 1; i < split.length; i++) {
-                            v += split[i] + " ";
-                        }
-                        nwbData.setValue(v);
-                        data.add(nwbData);
+            List<String> lines = pythonProcess.execute();
+
+            if(pythonProcess.isOK()) {
+
+                JsonParser parser = new JsonParser(lines);
+                data = parser.parse();
+            } else {
+                int timeout = 0;
+                while (!pythonProcess.isErrorWritten() && timeout++ < 100) {
+                    synchronized (this) {
+                        wait(100);
                     }
                 }
+                String s = StringUtils.join(pythonProcess.getErrorOutput());
+                Exception e = new Exception(s);
+                throw e;
+
             }
-        } catch (Exception e) {
-            logger.error(e);
-            throw new RuntimeException(e);
-        }
+
 
         return data;
 

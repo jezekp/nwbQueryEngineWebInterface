@@ -101,16 +101,21 @@ public class HomePage extends BasePage {
 
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
             File[] files = null;
+
             protected List<NwbData> load() {
                 //logger.debug("I am called: " + data.size() + ", i: " + counter);
                 //read continuously all files with data - each calling of this method reads one file
                 boolean isQuery = !searchField.getValue().isEmpty();
 
-                if(counter == 0) {
+                if (counter == 0) {
                     files = getFiles();
                 }
                 if (counter < files.length && isQuery) {
-                    data.addAll(getService().loadData(searchField.getValue(), files[increaseCounter()]));
+                    try {
+                        data.addAll(getService().loadData(searchField.getValue(), files[increaseCounter()]));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
 
                     int progressValue = Math.round(counter / (float) files.length * 100);
                     logger.debug("Progress bar:" + progressValue);
@@ -133,7 +138,12 @@ public class HomePage extends BasePage {
 
                 item.add(new Label("fileName", nwbData.getFile().getName()));
                 item.add(new Label("dataset", nwbData.getDataSet()));
-                item.add(new Label("value", nwbData.getValue().toString()));
+                Object value = nwbData.getValue();
+                Object printValue = value;
+                if(value.getClass().isArray()) {
+                    printValue = Arrays.toString((Object[]) value);
+                }
+                item.add(new Label("value", printValue.toString()));
                 item.add(new BootstrapLink<String>("file", Model.of(nwbData.getFile().getAbsolutePath()), Buttons.Type.Link) {
                     @Override
                     public void onClick() {
@@ -188,7 +198,7 @@ public class HomePage extends BasePage {
 
         };
 
-        BootstrapRadioChoice<String> radioChoice = new BootstrapRadioChoice("engine", new PropertyModel<String>(this, "selected"), CHOICES);
+        BootstrapRadioChoice<String> radioChoice = new BootstrapRadioChoice<>("engine", new PropertyModel<String>(this, "selected"), CHOICES);
 
         form.add(send);
         form.add(searchField);
@@ -215,7 +225,7 @@ public class HomePage extends BasePage {
         counter = 0;
     }
 
-    private GenericService getService() {
+    private GenericService<NwbData> getService() {
         if (selected.equals(QUERY_ENGINE)) {
             logger.debug("QueryEngine");
             return nwbService;

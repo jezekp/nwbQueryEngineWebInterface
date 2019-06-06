@@ -39,7 +39,7 @@ public class IndexerService implements GenericService<NwbData> {
     GenericDao<NwbData, File> indexerDao;
 
     @Override
-    public List<NwbData> loadData(String query, File file) {
+    public List<NwbData> loadData(String query, File file) throws Exception {
         return indexerDao.getData(query, file);
     }
 

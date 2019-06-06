@@ -1,5 +1,8 @@
 package edu.berkeley.nwbqueryengineweb.data.pojo;
 
+import com.fasterxml.jackson.databind.util.BeanUtil;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 import java.io.Serializable;
 import java.io.File;
 
@@ -55,5 +58,10 @@ public class NwbData implements Serializable {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
     }
 }

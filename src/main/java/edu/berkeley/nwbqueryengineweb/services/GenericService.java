@@ -30,7 +30,7 @@ import java.io.File;
  **********************************************************************************************************************/
 public interface GenericService<T> {
 
-    List<T> loadData(String query, File file);
+    List<T> loadData(String query, File file) throws Exception;
     File[] getFiles();
     String getRootDir();
 }
