@@ -81,12 +81,7 @@ public class NwbDao implements GenericDao<NwbData, File> {
 
     @Override
     public File[] getFiles() {
-        List<File> res = new LinkedList<>();
-        Iterator<File> files = FileUtils.iterateFiles(new File(getRootDir()), new NwbFileFilter(), TrueFileFilter.INSTANCE);
-        while (files.hasNext()) {
-            res.add(files.next());
-        }
-        return res.toArray(new File[]{});
+        return edu.berkeley.nwbqueryengineweb.data.utils.FileUtils.getFiles(getRootDir());
     }
 
     @Override

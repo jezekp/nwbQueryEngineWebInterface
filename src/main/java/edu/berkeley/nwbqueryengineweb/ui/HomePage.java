@@ -57,9 +57,10 @@ public class HomePage extends BasePage {
 
     private final static String QUERY_ENGINE = "NWB Query Engine";
     private final static String INDEXER = "NWB Indexer";
+    private final static String SEARCH_PYTHON = "Search Python";
 
     private static final List<String> CHOICES = Arrays
-            .asList(new String[]{QUERY_ENGINE, INDEXER});
+            .asList(new String[]{QUERY_ENGINE, INDEXER, SEARCH_PYTHON});
 
     private String selected = QUERY_ENGINE;
 
@@ -71,6 +72,9 @@ public class HomePage extends BasePage {
 
     @SpringBean(name = "indexerService")
     GenericService<NwbData> indexerService;
+
+    @SpringBean(name = "searchPythonService")
+    GenericService<NwbData> searchPythonService;
 
 
     public HomePage(final PageParameters parameters) {
@@ -229,9 +233,11 @@ public class HomePage extends BasePage {
         if (selected.equals(QUERY_ENGINE)) {
             logger.debug("QueryEngine");
             return nwbService;
-        } else {
+        } else if(selected.equals(INDEXER)) {
             logger.debug("Indexer");
             return indexerService;
+        } else {
+            return searchPythonService;
         }
 
     }

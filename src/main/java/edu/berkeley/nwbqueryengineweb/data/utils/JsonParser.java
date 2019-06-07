@@ -44,63 +44,70 @@ public class JsonParser {
         this.data = data;
     }
 
+    private List<String> prepareJson(List<String> data) {
+        List<String> res = new LinkedList<>();
+        for (String item : data) {
+            if (!item.startsWith("Opening") && !item.startsWith("Found")) {
+                res.add(item);
+            }
+        }
+        return res;
+    }
+
     public List<NwbData> parse() throws ParseException {
         List<NwbData> result = new LinkedList<>();
-        if(data.size() > 2) {
-            data.remove(0);
-            data.remove(0);
 
 
-            String stringData = StringUtils.join(data);
-            stringData = stringData.replaceAll("'", "\"");
-            Object obj = new JSONParser().parse(stringData);
+        String stringData = StringUtils.join(prepareJson(data));
+        stringData = stringData.replaceAll("'", "\"");
+        Object obj = new JSONParser().parse(stringData);
 
-            JSONArray jo = (JSONArray) obj;
-            for (Object o : jo) {
-                if (o instanceof JSONArray) {
-                    JSONArray results = ((JSONArray) o);
-                    for (Object r : results) {
-                        JSONObject resultObject = (JSONObject) r;
-                        Object file = resultObject.get("file");
-                        Object subQueryObject = resultObject.get("subqueries");
-                        if (subQueryObject instanceof JSONArray) {
-                            JSONArray subQueryArray = (JSONArray) subQueryObject;
-                            for (Object subQuery : subQueryArray) {
-                                JSONArray item = (JSONArray) subQuery;
-                                for (Object innerItem : item) {
-                                    JSONObject innerItemObject = (JSONObject) innerItem;
-                                    Object node = innerItemObject.get("node");
-                                    Object vind = innerItemObject.get("vind");
-                                    Map<String, Object> vindMap = processNode(vind);
-                                    result.addAll(mapToNwbData(vindMap, (String) node, (String) file));
-                                    Object vtbl = innerItemObject.get("vtbl");
-                                    Map<String, Object> vtblMap = processNode(vtbl);
-                                    result.addAll(mapToNwbData(vtblMap, (String) node, (String) file));
-
-                                }
-
+        JSONArray jo = (JSONArray) obj;
+        for (Object o : jo) {
+            if (o instanceof JSONArray) {
+                JSONArray results = ((JSONArray) o);
+                for (Object r : results) {
+                    JSONObject resultObject = (JSONObject) r;
+                    Object file = resultObject.get("file");
+                    Object subQueryObject = resultObject.get("subqueries");
+                    if (subQueryObject instanceof JSONArray) {
+                        JSONArray subQueryArray = (JSONArray) subQueryObject;
+                        for (Object subQuery : subQueryArray) {
+                            JSONArray item = (JSONArray) subQuery;
+                            for (Object innerItem : item) {
+                                JSONObject innerItemObject = (JSONObject) innerItem;
+                                Object node = innerItemObject.get("node");
+                                Object vind = innerItemObject.get("vind");
+                                Map<String, Object> vindMap = processNode(vind);
+                                result.addAll(mapToNwbData(vindMap, (String) node, (String) file));
+                                Object vtbl = innerItemObject.get("vtbl");
+                                Map<String, Object> vtblMap = processNode(vtbl);
+                                result.addAll(mapToNwbData(vtblMap, (String) node, (String) file));
 
                             }
-                        }
 
+
+                        }
                     }
+
                 }
             }
         }
+
         return result;
     }
 
     private Map<String, Object> processNode(Object node) {
         Map<String, Object> res = new LinkedHashMap<>();
-        if(node instanceof JSONObject) {
+        if (node instanceof JSONObject) {
             JSONObject nodeObject = (JSONObject) node;
             Set<String> keys = nodeObject.keySet();
-            for(String key : keys) {
+            for (String key : keys) {
                 Object value = nodeObject.get(key);
-                if(value instanceof JSONArray) {
+                if (value instanceof JSONArray) {
                     JSONArray valueArray = (JSONArray) value;
                     List<Object> values = new LinkedList<>();
-                    for(Object itemArray : valueArray) {
+                    for (Object itemArray : valueArray) {
                         values.add(itemArray);
                     }
                     res.put(key, values.toArray());
@@ -112,7 +119,7 @@ public class JsonParser {
 
     private List<NwbData> mapToNwbData(Map<String, Object> map, String node, String file) {
         List<NwbData> res = new LinkedList<>();
-        for(String key : map.keySet()) {
+        for (String key : map.keySet()) {
             NwbData data = new NwbData();
             data.setFile(new File(file));
             data.setDataSet(node);

@@ -1,32 +1,22 @@
 package edu.berkeley.nwbqueryengineweb.data.dao;
 
 import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
-import edu.berkeley.nwbqueryengineweb.data.utils.JsonParser;
-import edu.berkeley.nwbqueryengineweb.data.utils.NwbFileFilter;
 import edu.berkeley.nwbqueryengineweb.data.utils.PythonData;
-import edu.berkeley.nwbqueryengineweb.data.utils.PythonProcess;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.io.File;
 import java.util.List;
 
 /***********************************************************************************************************************
  *
- * This file is part of the nwbQueryEngineWebInterface project
+ * This file is part of the nwb-query-engine-web-interface project
 
  * ==========================================
  *
- * Copyright (C) 2019 by Petr Jezek
+ * Copyright (C) 2019 by University of West Bohemia (http://www.zcu.cz/en/)
  *
  ***********************************************************************************************************************
  *
@@ -41,19 +31,19 @@ import java.util.List;
  *
  ***********************************************************************************************************************
  *
- * IndexerDao, 2019/03/24 17:06 petr-jezek
+ * SearchPythonDao, 2019/06/07 09:13 petr-jezek
  *
  **********************************************************************************************************************/
 @Repository
-public class IndexerDao implements GenericDao<NwbData, File> {
+public class SearchPythonDao implements GenericDao<NwbData, File> {
 
     Log logger = LogFactory.getLog(getClass());
 
     @Value("${python.location}")
     private String python;
 
-    @Value("${indexer.script}")
-    private String indexerScript;
+    @Value("${search.python.script}")
+    private String searchPythonScript;
 
     @Value("${index.db}")
     private String indexDb;
@@ -61,19 +51,18 @@ public class IndexerDao implements GenericDao<NwbData, File> {
     @Value("${files.folder}")
     private String fileFolder;
 
-    @Override
-    public List<NwbData> getData(String query, File file) throws Exception {
 
+    @Override
+    public List getData(String query, File file) throws Exception {
         logger.debug("I'm called: " + file);
-        String[] params = new String[]{python, indexerScript, indexDb};
+        String[] params = new String[]{python, searchPythonScript, file.getAbsolutePath()};
         PythonData pythonData = new PythonData();
         return pythonData.getData(params, query);
-
     }
 
     @Override
     public File[] getFiles() {
-        return new File[] {new File(indexDb)};
+        return edu.berkeley.nwbqueryengineweb.data.utils.FileUtils.getFiles(getRootDir());
     }
 
     @Override
