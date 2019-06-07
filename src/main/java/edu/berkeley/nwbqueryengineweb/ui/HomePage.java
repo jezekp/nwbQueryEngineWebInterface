@@ -118,6 +118,7 @@ public class HomePage extends BasePage {
                     try {
                         data.addAll(getService().loadData(searchField.getValue(), files[increaseCounter()]));
                     } catch (Exception e) {
+                        logger.error(e);
                         throw new RuntimeException(e);
                     }
 
