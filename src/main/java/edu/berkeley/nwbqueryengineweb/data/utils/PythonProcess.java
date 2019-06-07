@@ -78,6 +78,7 @@ public class PythonProcess {
                     setErrorWritten(true);
                 } catch (IOException e) {
                     logger.error(e);
+                    throw new RuntimeException(e);
                 }
             }
         }.start();
