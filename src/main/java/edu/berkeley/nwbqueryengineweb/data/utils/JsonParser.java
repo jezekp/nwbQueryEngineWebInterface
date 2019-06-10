@@ -60,6 +60,7 @@ public class JsonParser {
 
         String stringData = StringUtils.join(prepareJson(data));
         stringData = stringData.replaceAll("'", "\"");
+        stringData = stringData.replaceAll("\\(|\\)", "");
         Object obj = new JSONParser().parse(stringData);
 
         JSONArray jo = (JSONArray) obj;
@@ -81,8 +82,14 @@ public class JsonParser {
                                 Map<String, Object> vindMap = processNode(vind);
                                 result.addAll(mapToNwbData(vindMap, (String) node, (String) file));
                                 Object vtbl = innerItemObject.get("vtbl");
-                                Map<String, Object> vtblMap = processNode(vtbl);
-                                result.addAll(mapToNwbData(vtblMap, (String) node, (String) file));
+                                JSONObject vtblObject = (JSONObject) vtbl;
+                                Object combined = vtblObject.get("combined");
+                                JSONArray combinedArray = (JSONArray) combined;
+                                for(Object combinedObject : combinedArray) {
+                                    Map<String, Object> vtblMap = processNode(combinedObject);
+                                    result.addAll(mapToNwbData(vtblMap, (String) node, (String) file));
+                                }
+
 
                             }
 
@@ -111,6 +118,9 @@ public class JsonParser {
                         values.add(itemArray);
                     }
                     res.put(key, values.toArray());
+                }
+                else  {
+                    res.put(key, value);
                 }
             }
         }

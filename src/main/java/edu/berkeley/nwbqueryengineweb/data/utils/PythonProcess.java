@@ -106,15 +106,16 @@ public class PythonProcess {
 
     public static void main(String[] args) {
         String location = "/usr/bin/python3.6";
-        String script = "/home/petr-jezek/python/nwbindexer/query_index.py";
-        String db = "/home/petr-jezek/python/nwbindexer/nwb_index.db";
+        String script = "/home/petr-jezek/python/nwbindexer/search_nwb.py";
+        String db = "/tmp/basic_example.nwb";
         String[] params = new String[]{location, script, db};
-        PythonProcess p = new PythonProcess(params, "/epochs/*:(start_time>2)");
+        PythonProcess p = new PythonProcess(params, "units: id, location, quality > 0.93");
         try {
             List<String> lines = p.execute();
             //lines.forEach(i -> System.out.println(i));
             JsonParser parser = new JsonParser(lines);
-            parser.parse();
+            List<NwbData> res = parser.parse();
+            res.forEach(i -> System.out.println(i));
 
 
         } catch (Exception e) {
