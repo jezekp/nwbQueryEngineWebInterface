@@ -42,6 +42,9 @@ public class JsonParser {
 
     public JsonParser(List<String> data) {
         this.data = data;
+        if (data == null) {
+            throw new NullPointerException("Data must be set");
+        }
     }
 
     private List<String> prepareJson(List<String> data) {
@@ -64,43 +67,50 @@ public class JsonParser {
         Object obj = new JSONParser().parse(stringData);
 
         JSONArray jo = (JSONArray) obj;
-        for (Object o : jo) {
-            if (o instanceof JSONArray) {
-                JSONArray results = ((JSONArray) o);
-                for (Object r : results) {
-                    JSONObject resultObject = (JSONObject) r;
-                    Object file = resultObject.get("file");
-                    Object subQueryObject = resultObject.get("subqueries");
-                    if (subQueryObject instanceof JSONArray) {
-                        JSONArray subQueryArray = (JSONArray) subQueryObject;
-                        for (Object subQuery : subQueryArray) {
-                            JSONArray item = (JSONArray) subQuery;
-                            for (Object innerItem : item) {
-                                JSONObject innerItemObject = (JSONObject) innerItem;
-                                Object node = innerItemObject.get("node");
-                                Object vind = innerItemObject.get("vind");
-                                Map<String, Object> vindMap = processNode(vind);
-                                result.addAll(mapToNwbData(vindMap, (String) node, (String) file));
-                                Object vtbl = innerItemObject.get("vtbl");
-                                JSONObject vtblObject = (JSONObject) vtbl;
-                                Object combined = vtblObject.get("combined");
-                                JSONArray combinedArray = (JSONArray) combined;
-                                for(Object combinedObject : combinedArray) {
-                                    Map<String, Object> vtblMap = processNode(combinedObject);
-                                    result.addAll(mapToNwbData(vtblMap, (String) node, (String) file));
+        if (jo != null) {
+            for (Object o : jo) {
+                if (o instanceof JSONArray) {
+                    JSONArray results = ((JSONArray) o);
+                    if (results != null) {
+                        for (Object r : results) {
+                            JSONObject resultObject = (JSONObject) r;
+                            Object file = resultObject.get("file");
+                            Object subQueryObject = resultObject.get("subqueries");
+                            if (subQueryObject instanceof JSONArray) {
+                                JSONArray subQueryArray = (JSONArray) subQueryObject;
+                                if (subQueryArray != null) {
+                                    for (Object subQuery : subQueryArray) {
+                                        JSONArray item = (JSONArray) subQuery;
+                                        if (item != null) {
+                                            for (Object innerItem : item) {
+                                                JSONObject innerItemObject = (JSONObject) innerItem;
+                                                Object node = innerItemObject.get("node");
+                                                Object vind = innerItemObject.get("vind");
+                                                Map<String, Object> vindMap = processNode(vind);
+                                                result.addAll(mapToNwbData(vindMap, (String) node, (String) file));
+                                                Object vtbl = innerItemObject.get("vtbl");
+                                                JSONObject vtblObject = (JSONObject) vtbl;
+                                                Object combined = vtblObject.get("combined");
+                                                JSONArray combinedArray = (JSONArray) combined;
+                                                if (combinedArray != null) {
+                                                    for (Object combinedObject : combinedArray) {
+                                                        Map<String, Object> vtblMap = processNode(combinedObject);
+                                                        result.addAll(mapToNwbData(vtblMap, (String) node, (String) file));
+                                                    }
+                                                }
+
+                                            }
+                                        }
+
+                                    }
                                 }
-
-
                             }
-
 
                         }
                     }
-
                 }
             }
         }
-
         return result;
     }
 
@@ -118,8 +128,7 @@ public class JsonParser {
                         values.add(itemArray);
                     }
                     res.put(key, values.toArray());
-                }
-                else  {
+                } else {
                     res.put(key, value);
                 }
             }
@@ -132,7 +141,7 @@ public class JsonParser {
         for (String key : map.keySet()) {
             NwbData data = new NwbData();
             data.setFile(new File(file));
-            data.setDataSet(node);
+            data.setDataSet(node + "/" + key);
             data.setValue(map.get(key));
             res.add(data);
         }
