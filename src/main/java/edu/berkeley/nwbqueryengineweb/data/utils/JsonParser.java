@@ -60,7 +60,6 @@ public class JsonParser {
     public List<NwbData> parse() throws ParseException {
         List<NwbData> result = new LinkedList<>();
 
-
         String stringData = StringUtils.join(prepareJson(data));
         stringData = stringData.replaceAll("'", "\"");
         stringData = stringData.replaceAll("\\(|\\)", "");
