@@ -109,7 +109,7 @@ public class PythonProcess {
         String script = "/home/petr-jezek/python/nwbindexer/search_nwb.py";
         String db = "/tmp/basic_example.nwb";
         String[] params = new String[]{location, script, db};
-        PythonProcess p = new PythonProcess(params, "units: id, location, quality > 0.93");
+        PythonProcess p = new PythonProcess(params, "units: id, location, spike_times, quality > 0.80");
         try {
             List<String> lines = p.execute();
             //lines.forEach(i -> System.out.println(i));

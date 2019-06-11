@@ -137,14 +137,32 @@ public class JsonParser {
 
     private List<NwbData> mapToNwbData(Map<String, Object> map, String node, String file) {
         List<NwbData> res = new LinkedList<>();
+
+        String dataset = node + "/";
+        String value = "";
         for (String key : map.keySet()) {
-            NwbData data = new NwbData();
-            data.setFile(new File(file));
-            data.setDataSet(node + "/" + key);
-            data.setValue(map.get(key));
-            res.add(data);
+            dataset += key + ", ";
+            Object v = map.get(key);
+            if(v.getClass().isArray()) {
+                Object[] varray = (Object[]) v;
+                String array = Arrays.toString(varray);
+                value += array + ", ";
+            } else {
+                value += v + ", ";
+            }
+
+
         }
+        NwbData data = new NwbData();
+        data.setFile(new File(file));
+        data.setDataSet(removeTrailingComma(dataset));
+        data.setValue(removeTrailingComma(value));
+        res.add(data);
         return res;
+    }
+
+    private String removeTrailingComma(String s) {
+        return s == null ? null : s.replaceAll(", $", "");
     }
 
 }
