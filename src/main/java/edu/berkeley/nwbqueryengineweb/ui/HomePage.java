@@ -191,7 +191,7 @@ public class HomePage extends BasePage {
             @Override
             public void onSubmit(AjaxRequestTarget target) {
                 boolean isQuery = !searchField.getValue().isEmpty();
-                logger.debug("visible" + isQuery);
+                logger.debug("visible " + isQuery);
                 dataDiv.setVisible(isQuery);
                 progressDiv.setVisible(true);
                 target.add(dataDiv);
