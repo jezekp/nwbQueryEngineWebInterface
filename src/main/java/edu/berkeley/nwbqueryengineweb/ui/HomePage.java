@@ -19,6 +19,8 @@ package edu.berkeley.nwbqueryengineweb.ui;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
+import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationMessage;
+import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.components.progress.ProgressBar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapRadioChoice;
@@ -27,9 +29,15 @@ import edu.berkeley.nwbqueryengineweb.data.pojo.NwbData;
 import edu.berkeley.nwbqueryengineweb.services.GenericService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Component;
+import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.Session;
+import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.core.request.handler.PageProvider;
+import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
@@ -39,7 +47,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
+import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
@@ -106,11 +117,13 @@ public class HomePage extends BasePage {
         final IModel<List<NwbData>> dataModel = new LoadableDetachableModel() {
             File[] files = null;
 
+
+
             protected List<NwbData> load() {
+
                 //logger.debug("I am called: " + data.size() + ", i: " + counter);
                 //read continuously all files with data - each calling of this method reads one file
                 boolean isQuery = !searchField.getValue().isEmpty();
-
                 if (counter == 0) {
                     files = getFiles();
                 }
@@ -119,7 +132,8 @@ public class HomePage extends BasePage {
                         data.addAll(getService().loadData(searchField.getValue(), files[increaseCounter()]));
                     } catch (Exception e) {
                         logger.error(e);
-                        throw new RuntimeException(e);
+                        getSession().error(e.getLocalizedMessage());
+                        throw new RestartResponseException(HomePage.class);
                     }
 
                     int progressValue = Math.round(counter / (float) files.length * 100);
@@ -135,6 +149,9 @@ public class HomePage extends BasePage {
             }
         };
 
+        final NotificationPanel fp = new NotificationPanel("feedback");
+        fp.setOutputMarkupId(true);
+        add(fp);
 
         final BootstrapForm form = new BootstrapForm("form");
         final PageableListView<NwbData> listview = new PageableListView<NwbData>("listview", dataModel, 50) {
@@ -199,6 +216,8 @@ public class HomePage extends BasePage {
                 progressBar.value(0);
                 percCompleted.setDefaultModel(Model.of(0));
                 clearCounter();
+                target.add(fp);
+
             }
 
         };
@@ -242,5 +261,4 @@ public class HomePage extends BasePage {
         }
 
     }
-
 }
