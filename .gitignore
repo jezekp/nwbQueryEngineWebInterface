@@ -22,3 +22,5 @@
 hs_err_pid*
 .idea
 nwbQueryEngineWebInterface.iml
+nwb-query-engine-web-interface.iml
+target
