@@ -7,6 +7,7 @@ RUN git clone https://github.com/jezekp/nwbQueryEngineWebInterface.git
 FROM maven:3.5-jdk-8-alpine as build
 WORKDIR /app/nwbQueryEngineWebInterface
 COPY --from=clone /app/nwbQueryEngineWebInterface /app
+COPY		./Docker/project.properties /app/nwbQueryEngineWebInterface/src/main/webapp/WEB-INF
 RUN mvn package
 
 #TODO - configure project.properties for docker from docker file
