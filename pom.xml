@@ -24,7 +24,7 @@
         <wicket.version>8.0.0-M7</wicket.version>
         <wicket.bootsrap.version>2.0.0-M6</wicket.bootsrap.version>
         <jetty.version>7.6.13.v20130916</jetty.version>
-        <spring.version>4.3.24.RELEASE</spring.version>
+        <spring.version>5.3.18</spring.version>
         <commons-io.version>2.6</commons-io.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
